@@ -11,15 +11,134 @@ body {
     align-items: center;
     max-width: 700px;
     margin: auto;
+
+    nav a {
+      margin-left: 15px;
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+    }
   }
   
-  nav a {
-    margin-left: 15px;
+  /* PAGINA DE INICIO */
+  .home {
+    margin-top: 60px;
+
+    h2 {
+      font-size: 32px;
+      color: #333;
+    }
+    p {
+      font-size: 18px;
+      margin: 10px 0 30px;
+      color: #555;
+    }
+  }
+
+  /* LOGIN  y REGISTER*/
+  .login-container {
+    max-width: 400px;
+    margin: 80px auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .login-form {
+      display: flex;
+      flex-direction: column;
+
+      label {
+        margin-top: 15px;
+        font-weight: bold;
+        text-align: left;
+        color: #444;
+      }
+      input {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        margin: 5px 0;
+        font-size: 16px;
+      }
+    }
+    .form-footer {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #555;
+
+      a {
+        color: #333;
+        text-decoration: underline;
+      }
+    }
+  }
+
+  /* PERFIL DE USUARIO */
+  .profile-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 60px;
+
+    .profile-card {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 300px;
+      text-align: center;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+
+      h2 {
+        margin-bottom: 5px;
+        color: #333;
+      }
+      p {
+        color: #777;
+        margin-bottom: 20px;
+      }
+    }
+    .avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin-bottom: 15px;
+    }
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      margin: 20px 0;
+
+      div {
+        text-align: center;
+      }
+      span {
+        display: block;
+        font-size: 14px;
+        color: #555;
+      }
+    }
+  }
+
+  /* BOTONES */
+  .btn {
+    background-color: #333;
+    color: white;
+    padding: 12px 24px;
+    font-size: 16px;
     text-decoration: none;
-    color: #333;
-    font-weight: bold;
+    border-radius: 6px;
+    transition: background-color 0.3s;
+
+    &:hover{
+      background-color: #555;
+    }
   }
-  
+
+  /* TABLERO DE JUEGO */
   .board {
     display: grid;
     grid-template-columns: repeat(8, 60px);

@@ -1,6 +1,6 @@
 const board = document.getElementById("board");
 
-// Posiciones iniciales usando emojis
+// Posiciones iniciales usando emojis TODO: utilizar iconos en su lugar
 const initialBoard = [
   ["♜", "♞", "♝", "♛", "♚", "♝", "♞", "♜"],
   ["♟", "♟", "♟", "♟", "♟", "♟", "♟", "♟"],
@@ -13,7 +13,6 @@ const initialBoard = [
 ];
 
 function createBoard() {
-  board.innerHTML = ""; // Por si acaso recargas
   for (let row = 0; row < 8; row++) {
     for (let col = 0; col < 8; col++) {
       const square = document.createElement("div");
