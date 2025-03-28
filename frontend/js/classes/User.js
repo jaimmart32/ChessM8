@@ -12,7 +12,7 @@ export class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.avatarUrl = avatarUrl ||  '../../assets/img/usuario.png';
+        this.avatarUrl = avatarUrl ||  'assets/img/usuario.png';
         this.createdAt = new Date().toISOString();
         this.stats = {
             wins: 0,

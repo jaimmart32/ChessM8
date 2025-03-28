@@ -12,15 +12,15 @@
     <nav>
       <a href="index.html">Inicio</a>
       <a href="game.html">Jugar</a>
-      <a href="#">Salir</a>
+      <a href="#" id="logout">Logout</a>
     </nav>
   </header>
 
   <main class="profile-container">
     <div class="profile-card">
       <img src="assets/img/usuario.png" alt="Avatar" class="avatar">
-      <h2>pepito22</h2>
-      <p>Miembro desde: marzo 2025</p>
+      <h2 id="username">pepito22</h2>
+      <p id="member-since">Miembro desde: marzo 2025</p>
 
       <div class="stats">
         <div><strong>15</strong><span>Ganadas</span></div>
@@ -32,5 +32,7 @@
     </div>
   </main>
 
+  <script type="module" src="js/profile.js"></script>
+  <script type="module" src="js/logout.js"></script>
 </body>
 </html>
