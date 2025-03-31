@@ -1,4 +1,7 @@
 import { getCurrentUser } from "./db.js";
+import { requireAuth } from "./authGuard.js";
+
+requireAuth();
 
 window.addEventListener('DOMContentLoaded', () => {
     let user = getCurrentUser();

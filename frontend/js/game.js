@@ -1,3 +1,7 @@
+import { requireAuth } from "./authGuard.js";
+
+requireAuth();
+
 const board = document.getElementById("board");
 
 // Posiciones iniciales usando emojis TODO: utilizar iconos en su lugar
