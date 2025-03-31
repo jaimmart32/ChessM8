@@ -41,6 +41,14 @@ Una aplicación web de ajedrez desarrollada como proyecto final del bootcamp de 
 
 ---
 
+## 🧬 Modelos de Datos
+
+La app utiliza una estructura basada en los modelos `User` y `Game`, simulados inicialmente en `localStorage`.
+
+![Modelos de datos](assets/modelos-datos.png)
+
+---
+
 ## 👤 Autor
 
 - [Jaime Martínez]
