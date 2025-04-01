@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Iniciar sesión | Ajedrez App</title>
   <link rel="stylesheet" href="css/styles.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
@@ -20,11 +21,28 @@
       <button type="submit" class="btn">Entrar</button>
     </form>
 
+    <!--Inicio de sesion con Google OAuth-->
+    <div id="g_id_onload"
+        data-client_id="388574785709-7r642fardcpneglmrueb14qj0ameovau.apps.googleusercontent.com"
+        data-callback="handleGoogleLogin"
+        data-auto_prompt="false">
+    </div>
+
+    <div class="g_id_signin"
+        data-type="standard"
+        data-size="large"
+        data-theme="outline"
+        data-text="signin_with"
+        data-shape="rectangular"
+        data-logo_alignment="left">
+    </div>
+
     <p class="form-footer">
       ¿Todavía no estas registrado? <a href="register.html">Regístrate aquí</a>
     </p>
   </main>
 
   <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/googleOAuth.js"></script>
 </body>
 </html>

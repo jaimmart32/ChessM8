@@ -1,3 +1,5 @@
+//@ts-check
+
 export class User {
     id;
     username;
@@ -7,6 +9,14 @@ export class User {
     createdAt;
     stats;
 
+    /**
+     * Constructor de la clase User.
+     * @param {string} username - El nombre de usuario.
+     * @param {string} email - El correo electrónico del usuario.
+     * @param {string} password - La contraseña del usuario.
+     * @param {string|null} [avatarUrl='assets/img/usuario.png'] - La URL de la imagen de perfil del usuario.
+     * @throws {Error} - Si el username o el email están vacíos.
+     */
     constructor(username, email, password, avatarUrl = null){
         this.id = crypto.randomUUID();// usar autoincremento en producción con variable static??
         this.username = username;
