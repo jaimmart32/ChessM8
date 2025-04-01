@@ -8,21 +8,32 @@ let loginForm = document.getElementById('login-form');
 registerForm?.addEventListener('submit', onRegister);
 loginForm?.addEventListener('submit', onLogin);
 
+/**
+ * Event handler for the register form submission.
+ * It validates the input fields, checks for username and email availability,
+ * creates a new user and adds it to the database.
+ * Then, it alerts the user of the successful registration and redirects to
+ * the login page.
+ * @param {Event} event - The submit event of the register form.
+ */
 function onRegister(event) {
     event.preventDefault();
 
-    let form = event.target;
+    let form = /** @type {HTMLFormElement} */ (event.target);
     let formData = new FormData(form);
 
-    let username = formData.get('username').trim();
-    let email = formData.get('email').trim();
-    let password = formData.get('password');
+    let username = formData.get('username')?.toString().trim();
+    let email = formData.get('email')?.toString().trim();
+    let password = formData.get('password')?.toString();
 
     if(!validateUsername(username)) return alert('Nombre de usuario invalido.');
     if(!validateEmail(email)) return alert('Email invalido.');
     if(!validatePassword(password)) return alert('Contraseña inválida.');
 
-    if(findUserByUsername(username)) return alert('Este username ya está registrado.')
+    if(username === undefined) return alert('Nombre de usuario no proporcionado');
+    if(findUserByUsername(username)) return alert('Este username ya está registrado.');
+    if(email === undefined) return alert('Email no proporcionado');
+    if(password === undefined) return alert('Password no proporcionada');
     if(findUserByEmail(email)) return alert('Este email ya está registrado.');
 
     let newUser = new User(username, email, password);
@@ -32,13 +43,19 @@ function onRegister(event) {
     window.location.href = 'login.html';
 }
 
+/**
+ * Event handler for the login form submission.
+ * It validates the input fields, checks if the user exists and the password is correct,
+ * sets the current user and redirects to the profile page.
+ * @param {Event} event - The submit event of the login form.
+ */
 function onLogin(event) {
     event.preventDefault();
 
-    let form = event.target;
+    let form = /** @type {HTMLFormElement} */ (event.target);
     let formData = new FormData(form);
 
-    let email = formData.get('email').trim();
+    let email = formData.get('email')?.toString().trim();
     let password = formData.get('password');
 
     let user = findUserByEmail(email);
