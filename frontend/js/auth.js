@@ -19,24 +19,32 @@ loginForm?.addEventListener('submit', onLogin);
 function onRegister(event) {
     event.preventDefault();
 
-    let form = /** @type {HTMLFormElement} */ (event.target);
-    let formData = new FormData(form);
+    const form = /**@type {HTMLFormElement}*/(event.target);
+    const formData = new FormData(form);
 
-    let username = formData.get('username')?.toString().trim();
-    let email = formData.get('email')?.toString().trim();
-    let password = formData.get('password')?.toString();
+    const username = formData.get('username')?.toString().trim();
+    const email = formData.get('email')?.toString().trim();
+    const password = formData.get('password')?.toString();
 
-    if(!validateUsername(username)) return alert('Nombre de usuario invalido.');
-    if(!validateEmail(email)) return alert('Email invalido.');
-    if(!validatePassword(password)) return alert('Contraseña inválida.');
+    const validations = [
+        {valid: !!username, message: 'Nombre de usuario no proporcionado'},
+        {valid: !!email, message:'Email no proporcionado'},
+        {valid: !!password, message: 'Password no proporcionada'},
+        {valid: validateUsername(username), message: 'Nombre de usuario inválido'},
+        {valid: validateEmail(email), message: 'Email inválido'},
+        {valid: validatePassword(password), message: 'Password inválida'},
+        {valid: !findUserByUsername(username), message: 'Este username ya está registrado'},
+        {valid: !findUserByEmail(email), message: 'Este email ya está registrado'}
+    ]
 
-    if(username === undefined) return alert('Nombre de usuario no proporcionado');
-    if(findUserByUsername(username)) return alert('Este username ya está registrado.');
-    if(email === undefined) return alert('Email no proporcionado');
-    if(password === undefined) return alert('Password no proporcionada');
-    if(findUserByEmail(email)) return alert('Este email ya está registrado.');
+    for(const check of validations){
+        if(!check.valid){
+            alert(check.message);
+            return;
+        }
+    }
 
-    let newUser = new User(username, email, password);
+    const newUser = new User(/**@type {string}*/(username), /**@type {string}*/(email), /**@type {string}*/(password));
     addUser(newUser);
 
     alert('Registro exitoso, puedes iniciar sesion!');
@@ -52,7 +60,7 @@ function onRegister(event) {
 function onLogin(event) {
     event.preventDefault();
 
-    let form = /** @type {HTMLFormElement} */ (event.target);
+    let form = /**@type {HTMLFormElement}*/(event.target);
     let formData = new FormData(form);
 
     let email = formData.get('email')?.toString().trim();

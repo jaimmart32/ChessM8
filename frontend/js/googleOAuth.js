@@ -44,6 +44,6 @@ function handleGoogleLogin(response) {
     alert(`Bienvenido ${user.username}`);
     window.location.href = 'profile.html';
 }
-
+// Asegurar que Google puede acceder al callback
 // @ts-expect-error 
 window.handleGoogleLogin = handleGoogleLogin;
