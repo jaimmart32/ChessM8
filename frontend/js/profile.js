@@ -10,8 +10,14 @@ window.addEventListener('DOMContentLoaded', () => {
         window.location.href = 'login.html';
         return;
     }
+    const usernameEl = document.getElementById('username');
+    if(usernameEl) usernameEl.textContent = user.username;
+    
+    /**@type {HTMLImageElement|null} */
+    const avatarEl = document.querySelector('.avatar');
+    if(avatarEl) avatarEl.src = user.avatarUrl;
+    // document.querySelector('.avatar').src = user.avatarUrl;
 
-    document.getElementById('username').textContent = user.username;
-    document.querySelector('.avatar').src = user.avatarUrl;
-    document.getElementById('member-since').textContent = `Miembro desde: ${new Date(user.createdAt).toLocaleDateString()}`;// Convierte la fecha a una cadena en formato local
+    const memberEl = document.getElementById('member-since');
+    if(memberEl) memberEl.textContent = `Miembro desde: ${new Date(user.createdAt).toLocaleDateString()}`;// Convierte la fecha a una cadena en formato local
 });

@@ -56,7 +56,7 @@ function onLogin(event) {
     let formData = new FormData(form);
 
     let email = formData.get('email')?.toString().trim();
-    let password = formData.get('password');
+    let password = formData.get('password')?.toString();
 
     let user = findUserByEmail(email);
 

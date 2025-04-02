@@ -25,10 +25,11 @@ function handleGoogleLogin(response) {
     else {
         console.log('Usuario nuevo, registrandolo en la base de datos');
         user = {
+            id: payload.sub,
             username: payload.name,
             email: payload.email,
             avatarUrl: payload.picture,
-            googleId: payload.sub,
+            password: 'GooglePass',
             createdAt: new Date().toISOString(),
             stats: {
                 wins: 0,
