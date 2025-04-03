@@ -92,7 +92,8 @@ export function setCurrentUser(user) {
 
 // Coge el "token de sesion" del localStorage.
 export function getCurrentUser() {
-    return JSON.parse(localStorage.getItem(SESSION_KEY) ?? '');
+    const loggedUser = localStorage.getItem(SESSION_KEY);
+    return loggedUser ? JSON.parse(loggedUser) : null;
 }
 
 // Elimina el "token de sesion" al hacer logout
