@@ -1,4 +1,5 @@
 import { addUser, findUserByEmail, setCurrentUser } from "./db.js";
+import { store } from './store/redux.js';
 
 //Google llama a handleGoogleLogin como función global, debe estar en window.
 // podrian ahcer un login forzado, en el futuro se necesitara el backend para que
@@ -15,7 +16,8 @@ function handleGoogleLogin(response) {
     let payload = JSON.parse(atob(jwt.split('.')[1]));
     console.log('PAYLOAD: ', payload);
     
-    let existingUser = findUserByEmail(payload.email);
+    // let existingUser = findUserByEmail(payload.email);
+    let existingUser = store.user.getByEmail(payload.email);
     let user;
 
     if(existingUser) {
@@ -37,7 +39,10 @@ function handleGoogleLogin(response) {
                 draws: 0
             }
         };
-        addUser(user);
+        // addUser(user);
+        store.user.create(user, () => {
+            console.log('Usuario añadido con GoogelOAuth exitosamente via store.');
+        })
     }
     setCurrentUser(user);
 

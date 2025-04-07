@@ -130,6 +130,7 @@ const createStore = (reducer) => {
     const deleteUser = (user, callback) => _dispatch({type: ACTION_TYPES.DELETE_USER, user}, callback);
     const getAllUsers = () => currentState.users;
     const getUserById = (id) => currentState.users.find(user => user.id === id);
+    const getUserByUsername = (username) => currentState.users.find(user => user.username === username);
     const getUserByEmail = (email) => currentState.users.find(user => user.email === email);
 
 
@@ -140,6 +141,7 @@ const createStore = (reducer) => {
             delete: deleteUser,
             getAll: getAllUsers,
             getById: getUserById,
+            getByUsername: getUserByUsername,
             getByEmail: getUserByEmail
         },
         getState: () => currentState
