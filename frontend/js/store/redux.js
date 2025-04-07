@@ -77,24 +77,61 @@ const appReducer = (state = INITIAL_STATE, action) => {
   * @returns {{ getState: () => State, user: object }}
   */
 const createStore = (reducer) => {
-    let currentState = INITIAL_STATE;
+    // let currentState = INITIAL_STATE;
+    const LOCAL_STORAGE_KEY = 'APP_STATE';
+    let currentState = (() => {
+        try{
+            const appState = localStorage.getItem(LOCAL_STORAGE_KEY);
+            return appState ? JSON.parse(appState) : INITIAL_STATE;
+        }
+        catch (e) {
+            console.warn('Error leyendo del localStorage: ', e);
+            return INITIAL_STATE;
+        }
+    })();
     let currentReducer = reducer;
 
     /**
      * Realiza el dispatch de una accion al reducer actual,
      * modificando el estado actual.
      * @param {Object} action - La accion a realizar
+     * @param {function | undefined} [onEventDispatched] - Callback opcional
      * @private
      */
-    const _dispatch = (action) => {
-        currentState = currentReducer(currentState, action);
+    const _dispatch = (action, onEventDispatched) => {
+        const previousValue = currentState;
+        const currentValue = currentReducer(currentState, action);
+        currentState =  currentValue; 
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(currentState));
+    
+        //Emitir evento
+        window.dispatchEvent(new CustomEvent('stateChanged', {
+            detail: {
+                type: action.type,
+                changes: _getDifferences(previousValue, currentValue)
+            },
+            cancelable: true,
+            composed: true,
+            bubbles: true
+        }));
+
+        if(onEventDispatched) onEventDispatched();
+    };
+
+    function _getDifferences(prev, curr) {
+        return Object.keys(curr).reduce((diff, key) => {
+            if(prev[key] === curr[key]) return diff;
+            return { ...diff, [key]: curr[key]};
+        }, {});
     }
 
-    const createUser = (user) => _dispatch({type: ACTION_TYPES.CREATE_USER, user});
-    const updateUser = (user) => _dispatch({type: ACTION_TYPES.UPDATE_USER, user});
-    const deleteUser = (user) => _dispatch({type: ACTION_TYPES.DELETE_USER, user});
+    const createUser = (user, callback) => _dispatch({type: ACTION_TYPES.CREATE_USER, user}, callback);
+    const updateUser = (user, callback) => _dispatch({type: ACTION_TYPES.UPDATE_USER, user}, callback);
+    const deleteUser = (user, callback) => _dispatch({type: ACTION_TYPES.DELETE_USER, user}, callback);
     const getAllUsers = () => currentState.users;
-    const getUserbyId = (id) => currentState.users.find(user => user.id === id);
+    const getUserById = (id) => currentState.users.find(user => user.id === id);
+    const getUserByEmail = (email) => currentState.users.find(user => user.email === email);
+
 
     return {
         user: {
@@ -102,7 +139,8 @@ const createStore = (reducer) => {
             update: updateUser,
             delete: deleteUser,
             getAll: getAllUsers,
-            getById: getUserbyId
+            getById: getUserById,
+            getByEmail: getUserByEmail
         },
         getState: () => currentState
     };
