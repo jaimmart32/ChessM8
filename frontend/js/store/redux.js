@@ -18,6 +18,24 @@
  */
 
 /**
+ * @typedef {Object} Action
+ * @property {string} type
+ * @property {User} [user]
+ */
+
+
+/**
+ * @typedef {Object} UserStore
+ * @property {(user: User, callback?: () => void) => void} create
+ * @property {(user: User, callback?: () => void) => void} update
+ * @property {(user: User, callback?: () => void) => void} delete
+ * @property {() => Array<User>} getAll
+ * @property {(id: string) => User | undefined} getById
+ * @property {(username: string) => User | undefined} getByUsername
+ * @property {(email: string) => User | undefined} getByEmail
+ */
+
+/**
  * Estado inicial del Store
  * @type {State}
  */
@@ -56,7 +74,7 @@ const appReducer = (state = INITIAL_STATE, action) => {
         case ACTION_TYPES.UPDATE_USER:
             return {
                 ...state,
-                users: state.users.map(user =>
+                users: state.users.map((/** @type {User}*/user) =>
                     user.id === action.user?.id ? action.user : user
                 )
             };
@@ -64,7 +82,7 @@ const appReducer = (state = INITIAL_STATE, action) => {
         case ACTION_TYPES.DELETE_USER:
             return {
                 ...state,
-                users: state.users.filter(user => user.id !== action.user?.id)
+                users: state.users.filter((/** @type {User}*/user) => user.id !== action.user?.id)
             };
         
         default:
@@ -74,7 +92,7 @@ const appReducer = (state = INITIAL_STATE, action) => {
  /**
   * Crea el store personalizado
   * @param {Function} reducer
-  * @returns {{ getState: () => State, user: object }}
+  * @returns {{ getState: () => State, user: UserStore }}
   */
 const createStore = (reducer) => {
     // let currentState = INITIAL_STATE;
@@ -94,7 +112,7 @@ const createStore = (reducer) => {
     /**
      * Realiza el dispatch de una accion al reducer actual,
      * modificando el estado actual.
-     * @param {Object} action - La accion a realizar
+     * @param {Action} action - La accion a realizar
      * @param {function | undefined} [onEventDispatched] - Callback opcional
      * @private
      */
@@ -118,6 +136,11 @@ const createStore = (reducer) => {
         if(onEventDispatched) onEventDispatched();
     };
 
+    /**
+ * @param {State} prev
+ * @param {State} curr
+ * @returns {Partial<State>}
+ */
     function _getDifferences(prev, curr) {
         return Object.keys(curr).reduce((diff, key) => {
             if(prev[key] === curr[key]) return diff;
@@ -125,13 +148,31 @@ const createStore = (reducer) => {
         }, {});
     }
 
+    /**
+     * @param {User} user
+     * @param {() => void} [callback]
+     */
     const createUser = (user, callback) => _dispatch({type: ACTION_TYPES.CREATE_USER, user}, callback);
+
+    /**
+     * @param {User} user
+     * @param {() => void} [callback]
+     */
     const updateUser = (user, callback) => _dispatch({type: ACTION_TYPES.UPDATE_USER, user}, callback);
+
+    /**
+     * @param {User} user
+     * @param {() => void} [callback]
+     */
     const deleteUser = (user, callback) => _dispatch({type: ACTION_TYPES.DELETE_USER, user}, callback);
     const getAllUsers = () => currentState.users;
-    const getUserById = (id) => currentState.users.find(user => user.id === id);
-    const getUserByUsername = (username) => currentState.users.find(user => user.username === username);
-    const getUserByEmail = (email) => currentState.users.find(user => user.email === email);
+    
+    /** @param {string} id */
+    const getUserById = (id) => currentState.users.find((/** @type {User}*/user) => user.id === id);
+    /** @param {string} username */
+    const getUserByUsername = (username) => currentState.users.find((/** @type {User}*/user) => user.username === username);
+    /** @param {string} email */
+    const getUserByEmail = (email) => currentState.users.find((/** @type {User}*/user) => user.email === email);
 
 
     return {

@@ -34,8 +34,8 @@ function onRegister(event) {
         {valid: validateUsername(username), message: 'Nombre de usuario inválido'},
         {valid: validateEmail(email), message: 'Email inválido'},
         {valid: validatePassword(password), message: 'Password inválida'},
-        {valid: !store.user.getByUsername(username),  message: 'Este username ya está registrado'},
-        {valid: !store.user.getByEmail(email), message: 'Este email ya está registrado'}
+        {valid: !store.user.getByUsername(/** @type {string} */(username)),  message: 'Este username ya está registrado'},
+        {valid: !store.user.getByEmail(/** @type {string} */(email)), message: 'Este email ya está registrado'}
     ]
 
     for(const check of validations){
@@ -71,7 +71,7 @@ function onLogin(event) {
     let password = formData.get('password')?.toString();
 
     // let user = findUserByEmail(email);
-    let user = store.user.getByEmail(email);
+    let user = store.user.getByEmail(/** @type {string} */(email));
 
     if(!user) return alert('No existe un usuario con ese email.');
     if(!checkPassword(user, password)) return alert('La contraseña introducida es incorrecta.');
