@@ -55,8 +55,10 @@ function handleClick(square) {
     const fromCol = parseInt(selectedSquare.dataset.col);
     const selectedPiece = boardState[fromRow][fromCol];
 
-    // Si se selecciona una casilla vacia o del contrario
-    if(!piece || !isSameColor(selectedPiece, piece)){
+    const legalMoves = getLegalMoves(selectedPiece, fromRow, fromCol);
+    const isLegalMove = legalMoves.some(([r, c]) => r === row && c === col);
+    // Si es un movimiento legal se mueve la pieza
+    if(isLegalMove){
       console.log('Dentro de seleccion de casilla vacia');
       boardState[row][col] = selectedPiece;
       boardState[fromRow][fromCol] = '';
@@ -86,11 +88,90 @@ function isTurnCorrect(piece){
          (currentTurn === 'black' && piece === piece.toLowerCase());
 }
 
-function isSameColor(p1, p2){
-  return (p1 === p1.toUpperCase() && p2 === p2.toUpperCase()) ||
-         (p1 === p1.toLowerCase() && p2 === p2.toLowerCase());
+// function isSameColor(p1, p2){
+//   return (p1 === p1.toUpperCase() && p2 === p2.toUpperCase()) ||
+//          (p1 === p1.toLowerCase() && p2 === p2.toLowerCase());
+// }
+
+function getLegalMoves(piece, row, col){
+  switch(piece){
+
+    case 'P':
+      return getWhitePawnMoves(row, col);
+    
+    case 'p':
+      return getBlackPawnMoves(row, col);
+    default:
+      return [];
+  }
 }
 
+function getWhitePawnMoves(row, col){
+  const moves = [];
+
+  //Una casilla hacia adelante
+  if(isEmpty(row -1, col)){
+    moves.push([row - 1, col]);
+
+    //desde la fila inicial puede mover 2 casillas
+    if(row === 6 && isEmpty(row - 2, col)){
+      moves.push([row -2, col]);
+    }
+  }
+
+  //Capturas en diagonal
+  if(isEnemy(row -1, col - 1, 'white')){
+    moves.push([row - 1, col - 1]);
+  }
+  if(isEnemy(row - 1, col + 1, 'white')){
+    moves.push([row - 1, col + 1])
+  }
+
+  return moves;
+}
+
+function getBlackPawnMoves(row, col){
+  const moves = [];
+
+  //casilla hacia adelante
+  if(isEmpty(row + 1, col)){
+    moves.push([row + 1, col]);
+
+    //desde la fila inicial puede mover 2 casillas
+    if(row === 1 && isEmpty(row + 2, col)){
+      moves.push([row + 2, col]);
+    }
+  }
+  //Capturas en diagonal
+  if(isEnemy(row + 1, col - 1, 'black')){
+    moves.push([row + 1, col - 1]);
+  }
+  if(isEnemy(row + 1, col + 1, 'black')){
+    moves.push([row + 1, col + 1]);
+  }
+
+  return moves;
+}
+
+function isInsideBoard(row, col){
+  return row >= 0 && row < 8 && col >= 0 && col < 8;
+}
+
+function isEmpty(row, col){
+  return isInsideBoard(row, col) && boardState[row][col] === '';
+}
+
+function isEnemy(row, col, color){
+  const piece = boardState[row][col];
+  if(!isInsideBoard(row, col) || !piece) return false;
+
+  if(color === 'white'){
+    return piece === piece.toLowerCase();//es negra
+  }
+  else{
+    return piece === piece.toUpperCase();//es blanca
+  }
+}
 restartBtn.addEventListener('click', () => {
   boardState = JSON.parse(JSON.stringify(initialBoard));
   currentTurn = 'white';

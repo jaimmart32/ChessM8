@@ -1,5 +1,5 @@
 import { User } from './classes/User.js';
-import { addUser, findUserByEmail, findUserByUsername, checkPassword, setCurrentUser } from './db.js';
+import {  checkPassword, setCurrentUser } from './db.js';
 import { validateUsername, validateEmail, validatePassword } from './validate.js';
 import { store } from './store/redux.js';
 
@@ -8,7 +8,7 @@ let loginForm = document.getElementById('login-form');
 
 registerForm?.addEventListener('submit', onRegister);
 loginForm?.addEventListener('submit', onLogin);
-// @ts-expect-error
+// @ts-expect-error Hazte caso
 window.addEventListener('stateChanged', (/** @type {CustomEvent}*/event) => {
     console.log('Cambio de estado en redux: ', event.detail);
 })
