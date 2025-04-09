@@ -8,7 +8,10 @@ let loginForm = document.getElementById('login-form');
 
 registerForm?.addEventListener('submit', onRegister);
 loginForm?.addEventListener('submit', onLogin);
-
+// @ts-expect-error
+window.addEventListener('stateChanged', (/** @type {CustomEvent}*/event) => {
+    console.log('Cambio de estado en redux: ', event.detail);
+})
 /**
  * Event handler for the register form submission.
  * It validates the input fields, checks for username and email availability,

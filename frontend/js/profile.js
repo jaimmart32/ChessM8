@@ -20,4 +20,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const memberEl = document.getElementById('member-since');
     if(memberEl) memberEl.textContent = `Miembro desde: ${new Date(user.createdAt).toLocaleDateString()}`;// Convierte la fecha a una cadena en formato local
+
+    const editBtn = document.getElementById('edit-profile');
+    editBtn?.addEventListener('click', () => {
+        window.location.href = 'edit-profile.html';
+    })
 });

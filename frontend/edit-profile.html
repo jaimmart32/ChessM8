@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Editar perfil | Ajedrez App</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <header>
+    <h1>Ajedrez App</h1>
+    <nav>
+      <a href="index.html">Inicio</a>
+      <a href="game.html" id="game-link">Jugar</a>
+      <a href="profile.html" id="profile-link">Perfil</a>
+      <a href="login.html" id="login-link">Iniciar sesion</a>
+      <a href="register.html" id="register-link">Registrarse</a>
+      <a href="#" id="logout-link">Logout</a>
+    </nav>
+  </header>
+
+  <main class="eidt-profile-container">
+      <h2>Editar perfil</h2>
+      <form id="edit-profile-form">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username">
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email">
+
+        <label for="password">Nueva contraseña</label>
+        <input type="password" id="password" name="password" placeholder="********">
+
+        <label for="confirm-password">Confirmar contraseña</label>
+        <input type="password" id="confirm-password" name="confirm-password" placeholder="********">
+
+        <button type="submit" class="btn">Guardar cambios</button>
+      </form>
+
+      <p><a href="profile.html">Volver a mi perfil</a></p>
+  </main>
+
+  <script type="module" src="js/editProfile.js"></script>
+  <script type="module" src="js/logout.js"></script>
+  <script type="module" src="js/navVisibility.js"></script>
+</body>
+</html>

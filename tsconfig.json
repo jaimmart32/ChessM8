@@ -1,6 +1,6 @@
 {
   "include": ["./frontend/js/**/*.js"],
-  "exclude": ["./**/_hidden/**/*", "./frontend/js/game.js"],
+  "exclude": ["./**/_hidden/**/*", "./frontend/js/game.js", "./frontend/js/__tests__/*.js"],
   "compilerOptions": {
     "paths": {
       "classes/*": ["./frontend/js/classes/*.js"],
