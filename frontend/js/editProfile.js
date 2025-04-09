@@ -28,11 +28,24 @@ if(form){
         const username = profileForm.username.value.trim();
         const email = profileForm.email.value.trim();
         const newPassword = profileForm.password.value;
+        //Como el name del campo tiene -, hace falta la notación de corchetes
+        const confirmedPassword = profileForm['confirm-password'].value;
 
         if(!validateUsername(username)) return alert('Username inválido');
         if(!validateEmail(email)) return alert('Email inválido');
         if(newPassword && !validatePassword(newPassword)) return alert('Password inválida');
+        if(newPassword && newPassword !== confirmedPassword) return alert('La confirmación de la password no coincide')
 
+        //Comprobar que el username esta disponible
+        const userWithSameUsername = store.user.getByUsername(username);
+        if( userWithSameUsername && userWithSameUsername.id !== currentUser.id){
+            return alert('El username no está disponible');
+        }
+        //Comprobar si esta disponible el email
+        const userWithSameEmail = store.user.getByEmail(email);
+        if( userWithSameEmail && userWithSameEmail.id !== currentUser.id){
+            return alert('El email no está disponible');
+        }
         //Actualizar datos del usuario
         const updatedUser = {
             ...currentUser,
