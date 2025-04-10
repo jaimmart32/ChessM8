@@ -88,10 +88,11 @@ function isTurnCorrect(piece){
          (currentTurn === 'black' && piece === piece.toLowerCase());
 }
 
-// function isSameColor(p1, p2){
-//   return (p1 === p1.toUpperCase() && p2 === p2.toUpperCase()) ||
-//          (p1 === p1.toLowerCase() && p2 === p2.toLowerCase());
-// }
+function isSameColorFromColor(color, piece){
+  if(!piece) return false;
+  return (color === 'white' && piece === piece.toUpperCase()) ||
+          (color === 'black' && piece === piece.toLowerCase());
+}
 
 function getLegalMoves(piece, row, col){
   switch(piece){
@@ -101,6 +102,12 @@ function getLegalMoves(piece, row, col){
     
     case 'p':
       return getBlackPawnMoves(row, col);
+    
+    case 'H':
+      return getKnightMoves(row, col, 'white');
+    
+    case 'h':
+      return getKnightMoves(row, col, 'black');
     default:
       return [];
   }
@@ -148,6 +155,30 @@ function getBlackPawnMoves(row, col){
   }
   if(isEnemy(row + 1, col + 1, 'black')){
     moves.push([row + 1, col + 1]);
+  }
+
+  return moves;
+}
+
+function getKnightMoves(row, col, color){
+  const moves = [];
+  const offsets = [
+    [-2, -1], [-2, +1],
+    [-1, -2], [-1, +2],
+    [+1, -2], [+1, +2],
+    [+2, -1], [+2, +1],
+  ];
+
+  for(const [dx, dy] of offsets){
+    const r = row + dx;
+    const c = col + dy;
+
+    if(!isInsideBoard(r, c)) continue;
+
+    const target =  boardState[r][c];
+    if(!target || !isSameColorFromColor(color, target)){
+      moves.push([r, c]);
+    }
   }
 
   return moves;
