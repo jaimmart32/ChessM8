@@ -108,6 +108,13 @@ function getLegalMoves(piece, row, col){
     
     case 'h':
       return getKnightMoves(row, col, 'black');
+    
+    case 'B':
+      return getBishopMoves(row, col, 'white');
+    
+    case 'b':
+      return getBishopMoves(row, col, 'black');
+    
     default:
       return [];
   }
@@ -169,9 +176,9 @@ function getKnightMoves(row, col, color){
     [+2, -1], [+2, +1],
   ];
 
-  for(const [dx, dy] of offsets){
-    const r = row + dx;
-    const c = col + dy;
+  for(const [dirX, dirY] of offsets){
+    const r = row + dirX;
+    const c = col + dirY;
 
     if(!isInsideBoard(r, c)) continue;
 
@@ -184,6 +191,39 @@ function getKnightMoves(row, col, color){
   return moves;
 }
 
+function getBishopMoves(row, col, color){
+  const moves = [];
+
+  const directions = [
+    [-1, -1], // ↖
+    [-1, +1], // ↗
+    [+1, -1], // ↙
+    [+1, +1]  // ↘
+  ];
+
+  for(const [dirX, dirY] of directions){
+    let r = row + dirX;
+    let c = col + dirY;
+
+    while(isInsideBoard(r, c)){
+      const target = boardState[r][c];
+
+      if(!target){
+        moves.push([r, c]);
+      }
+      else if(!isSameColorFromColor(color, target)){
+        moves.push([r, c]);//puede capturar enemigo
+        break;
+      }
+      else{
+        break;// mismo color, no puede avanzar mas en esa dirección
+      }
+      r += dirX;
+      c += dirY;
+    }
+  }
+  return moves;
+}
 function isInsideBoard(row, col){
   return row >= 0 && row < 8 && col >= 0 && col < 8;
 }
