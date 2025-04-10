@@ -1,9 +1,11 @@
 {
   "name": "chessm8",
   "version": "1.0.0",
-  "main": "server/index.js",
+  "main": "server/server.basic.js",
   "type": "module",
   "scripts": {
+    "server": "npm run server:basic:start",
+    "server:basic:start": "node --env-file=.env --watch server/server.basic.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watchAll",
     "docs": "jsdoc ./frontend -r"
