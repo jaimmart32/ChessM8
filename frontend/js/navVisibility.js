@@ -1,5 +1,5 @@
 import { isAuthenticated } from "./authGuard.js";
-import { clearCurrentUser } from "./db.js";
+//import { clearCurrentUser } from "./db.js";
 
 // Muestra los links de la nav-bar segun si esta logueado o no
 document.addEventListener('DOMContentLoaded', () => {

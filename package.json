@@ -6,6 +6,9 @@
   "scripts": {
     "server": "npm run server:basic:start",
     "server:basic:start": "node --env-file=.env --watch server/server.basic.js",
+    "server:statics:start": "node --env-file=.env --watch server/server.statics.js",
+    "server:express:start": "node --env-file=.env --watch server/server.express.js",
+    "server:api:start": "node --env-file=.env --watch server/server.api.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watchAll",
     "docs": "jsdoc ./frontend -r"

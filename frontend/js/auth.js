@@ -2,6 +2,7 @@ import { User } from './classes/User.js';
 import {  checkPassword, setCurrentUser } from './db.js';
 import { validateUsername, validateEmail, validatePassword } from './validate.js';
 import { store } from './store/redux.js';
+import { getAPIData } from './fetch.js';
 
 let registerForm = document.getElementById('register-form');
 let loginForm = document.getElementById('login-form');
@@ -20,7 +21,7 @@ window.addEventListener('stateChanged', (/** @type {CustomEvent}*/event) => {
  * the login page.
  * @param {Event} event - The submit event of the register form.
  */
-function onRegister(event) {
+async function onRegister(event) {
     event.preventDefault();
 
     const form = /**@type {HTMLFormElement}*/(event.target);
@@ -50,12 +51,34 @@ function onRegister(event) {
 
     const newUser = new User(/**@type {string}*/(username), /**@type {string}*/(email), /**@type {string}*/(password));
     // addUser(newUser);
-    store.user.create(newUser, () => {
-        console.log('Usuario creado exitosamente via store.');
-    });
+    //store.user.create(newUser, () => {
+    //    console.log('Usuario creado exitosamente via store.');
+    //});
 
-    alert('Registro exitoso, puedes iniciar sesion!');
-    window.location.href = 'login.html';
+    const userPayload = {
+        id: newUser.id,
+        username: newUser.username,
+        email: newUser.email,
+        password: newUser.password,
+        avatarUrl: newUser.avatarUrl,
+        createdAt: newUser.createdAt,
+        wins: newUser.stats.wins,
+        losses: newUser.stats.losses,
+        draws: newUser.stats.draws
+    };
+
+    const formEncoded = new URLSearchParams(userPayload).toString();
+
+    const result = await getAPIData(
+    'http://127.0.0.1:1992/create/users',
+    'POST',
+    formEncoded
+    );
+
+    if (result) {
+        alert('Registro exitoso, puedes iniciar sesion!');
+        window.location.href = 'login.html';
+    }
 }
 
 /**
