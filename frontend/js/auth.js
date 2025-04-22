@@ -1,5 +1,5 @@
 import { User } from './classes/User.js';
-import {  checkPassword, setCurrentUser } from './db.js';
+import { setCurrentUser } from './db.js';
 import { validateUsername, validateEmail, validatePassword } from './validate.js';
 import { store } from './store/redux.js';
 import { getAPIData } from './fetch.js';
@@ -54,6 +54,8 @@ async function onRegister(event) {
     //store.user.create(newUser, () => {
     //    console.log('Usuario creado exitosamente via store.');
     //});
+
+    //TODO: utilizar el endpoint nuevo /register y manejar la respuesta, si hay error avisar de que el email o el username estan cogidos y sino derivar a profile.html
     const result = await getAPIData(
     'http://127.0.0.1:1337/create/users',
     'POST',
@@ -72,7 +74,7 @@ async function onRegister(event) {
  * sets the current user and redirects to the profile page.
  * @param {Event} event - The submit event of the login form.
  */
-function onLogin(event) {
+async function onLogin(event) {
     event.preventDefault();
 
     let form = /**@type {HTMLFormElement}*/(event.target);
@@ -81,13 +83,24 @@ function onLogin(event) {
     let email = formData.get('email')?.toString().trim();
     let password = formData.get('password')?.toString();
 
+    if(!email || !password){
+        return alert('Debes de completar todos los campos.');
+    }
+
+    const credentials = {email, password};
+
+    const result = await getAPIData('http://127.0.0.1:1337/login', 'POST', JSON.stringify(credentials));
+
+    if(!result || result.error){
+        return alert('Credenciales incorrectas');
+    }
     // let user = findUserByEmail(email);
-    let user = store.user.getByEmail(/** @type {string} */(email));
+    // let user = store.user.getByEmail(/** @type {string} */(email));
 
-    if(!user) return alert('No existe un usuario con ese email.');
-    if(!checkPassword(user, password)) return alert('La contraseña introducida es incorrecta.');
+    // if(!user) return alert('No existe un usuario con ese email.');
+    // if(!checkPassword(user, password)) return alert('La contraseña introducida es incorrecta.');
 
-    setCurrentUser(user);
+    setCurrentUser(result);
     alert('Has iniciado sesion exitosamente!');
     window.location.href = 'profile.html';
 

@@ -1,4 +1,4 @@
-// import { User } from './classes/User.js'
+/** @typedef {import('./classes/User.js').User} User */
 
 const TIMEOUT = 10000
 
@@ -39,12 +39,16 @@ export async function simpleFetch (url, options) {
   return (await result.text());
 }
 
+// Validación de errores de HTTP (404, 500, etc.), Timeout automático si tarda demasiado,
+//  Control de tipos de contenido, Preparación automática de headers
+// TODO: añadir soporte para guardar y enviar token con Authorization en futuras peticiones también
+
 /**
  * Get data from API
  * @param {string} apiURL
  * @param {string} method
  * @param {any} [data]
- * @returns {Promise<Array<User>>}
+ * @returns {Promise<any>}
  */
 export async function getAPIData(apiURL, method = 'GET', data) {
   let apiData
