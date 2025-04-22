@@ -54,25 +54,10 @@ async function onRegister(event) {
     //store.user.create(newUser, () => {
     //    console.log('Usuario creado exitosamente via store.');
     //});
-
-    const userPayload = {
-        id: newUser.id,
-        username: newUser.username,
-        email: newUser.email,
-        password: newUser.password,
-        avatarUrl: newUser.avatarUrl,
-        createdAt: newUser.createdAt,
-        wins: newUser.stats.wins,
-        losses: newUser.stats.losses,
-        draws: newUser.stats.draws
-    };
-
-    const formEncoded = new URLSearchParams(userPayload).toString();
-
     const result = await getAPIData(
-    'http://127.0.0.1:1992/create/users',
+    'http://127.0.0.1:1337/create/users',
     'POST',
-    formEncoded
+    JSON.stringify(newUser)
     );
 
     if (result) {
