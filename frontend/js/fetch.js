@@ -85,6 +85,7 @@ export async function getAPIData(apiURL, method = 'GET', data) {
         console.error('Internal server error');
       }
     }
+    throw err;
   }
 
   return apiData

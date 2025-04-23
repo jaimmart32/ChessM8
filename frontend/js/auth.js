@@ -1,8 +1,8 @@
 import { User } from './classes/User.js';
 import { setCurrentUser } from './db.js';
 import { validateUsername, validateEmail, validatePassword } from './validate.js';
-import { store } from './store/redux.js';
-import { getAPIData } from './fetch.js';
+// import { store } from './store/redux.js';
+import { getAPIData, HttpError } from './fetch.js';
 
 let registerForm = document.getElementById('register-form');
 let loginForm = document.getElementById('login-form');
@@ -38,8 +38,8 @@ async function onRegister(event) {
         {valid: validateUsername(username), message: 'Nombre de usuario inválido'},
         {valid: validateEmail(email), message: 'Email inválido'},
         {valid: validatePassword(password), message: 'Password inválida'},
-        {valid: !store.user.getByUsername(/** @type {string} */(username)),  message: 'Este username ya está registrado'},
-        {valid: !store.user.getByEmail(/** @type {string} */(email)), message: 'Este email ya está registrado'}
+        // {valid: !store.user.getByUsername(/** @type {string} */(username)),  message: 'Este username ya está registrado'},
+        // {valid: !store.user.getByEmail(/** @type {string} */(email)), message: 'Este email ya está registrado'}
     ]
 
     for(const check of validations){
@@ -56,15 +56,22 @@ async function onRegister(event) {
     //});
 
     //TODO: utilizar el endpoint nuevo /register y manejar la respuesta, si hay error avisar de que el email o el username estan cogidos y sino derivar a profile.html
-    const result = await getAPIData(
-    'http://127.0.0.1:1337/create/users',
-    'POST',
-    JSON.stringify(newUser)
-    );
+    try {
+        await getAPIData(
+            'http://127.0.0.1:1337/register',
+            'POST',
+            JSON.stringify(newUser)
+        );
 
-    if (result) {
-        alert('Registro exitoso, puedes iniciar sesion!');
+        alert('Registro exitoso, puedes iniciar sesión!');
         window.location.href = 'login.html';
+    } catch (err) {
+        if (err instanceof HttpError && err.response.status === 409) {
+            alert('El email o el username ya están registrados.');
+        } else {
+            console.error('Error inesperado', err);
+            alert('Error al registrarse, intenta más tarde.');
+        }
     }
 }
 
@@ -88,20 +95,27 @@ async function onLogin(event) {
     }
 
     const credentials = {email, password};
-
-    const result = await getAPIData('http://127.0.0.1:1337/login', 'POST', JSON.stringify(credentials));
-
-    if(!result || result.error){
-        return alert('Credenciales incorrectas');
-    }
     // let user = findUserByEmail(email);
     // let user = store.user.getByEmail(/** @type {string} */(email));
 
     // if(!user) return alert('No existe un usuario con ese email.');
     // if(!checkPassword(user, password)) return alert('La contraseña introducida es incorrecta.');
 
-    setCurrentUser(result);
-    alert('Has iniciado sesion exitosamente!');
-    window.location.href = 'profile.html';
+
+    try {
+        const result = await getAPIData('http://127.0.0.1:1337/login', 'POST', JSON.stringify(credentials));
+
+        setCurrentUser(result);
+        alert('Has iniciado sesión exitosamente!');
+        window.location.href = 'profile.html';
+
+    } catch (err) {
+        if (err instanceof HttpError && err.response.status === 401) {
+            alert('Credenciales incorrectas.');
+        } else {
+            console.error('Error inesperado en login', err);
+            alert('Error al iniciar sesión. Inténtalo más tarde.');
+        }
+    }
 
 }

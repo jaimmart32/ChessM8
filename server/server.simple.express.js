@@ -42,6 +42,7 @@ app.post('/register', (req, res) => {
         }
 
         crud.create(USERS_URL, req.body, (newUser) => {
+            console.log(`server create user ${newUser.username} creado`, newUser);
             res.status(201).send(newUser);
         })
     })
