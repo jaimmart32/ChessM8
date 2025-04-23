@@ -2,6 +2,8 @@
 
 const TIMEOUT = 10000
 
+// getAPIData devuelve el body (parseado), no el objeto Response!!
+// alomejor conviene devolver la respuesta para informar al cliente de sus errores
 /**
  * @extends {Error}
  * @property {Response} response

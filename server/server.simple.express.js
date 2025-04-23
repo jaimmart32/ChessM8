@@ -57,6 +57,28 @@ app.post('/login', (req, res) => {
     });
 });
 
+app.put('/update-profile', (req, res) => {
+    const updatedData = req.body;
+    const { id, email, username } = updatedData;
+    if(!id){
+        return res.status(400).send({erro: 'ID no proporcionado'});
+    }
+
+    crud.read(USERS_URL, (users) => {
+        const conflict = users.find(user =>
+        (user.email === email || user.username === username) &&
+        user.id != id
+        );
+        if(conflict){
+            return res.status(409).send({error: 'Username o email ya en uso por otro usuario.'});
+        }
+
+        crud.update(USERS_URL, id, updatedData, (updatedUser) => {
+            res.status(200).send(updatedUser);
+        });
+    });
+});
+
 app.listen(port, () => {
     console.log(`example app listening on port ${port}`);
 });
