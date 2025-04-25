@@ -58,7 +58,7 @@ async function onRegister(event) {
     //TODO: utilizar el endpoint nuevo /register y manejar la respuesta, si hay error avisar de que el email o el username estan cogidos y sino derivar a profile.html
     try {
         await getAPIData(
-            'http://127.0.0.1:1337/register',
+            'http://127.0.0.1:1337/api/register',
             'POST',
             JSON.stringify(newUser)
         );
@@ -70,7 +70,7 @@ async function onRegister(event) {
             alert('El email o el username ya están registrados.');
         } else {
             console.error('Error inesperado', err);
-            alert('Error al registrarse, intenta más tarde.');
+            alert('Error al registrarse, intentalo más tarde.');
         }
     }
 }
@@ -103,7 +103,7 @@ async function onLogin(event) {
 
 
     try {
-        const result = await getAPIData('http://127.0.0.1:1337/login', 'POST', JSON.stringify(credentials));
+        const result = await getAPIData('http://127.0.0.1:1337/api/login', 'POST', JSON.stringify(credentials));
 
         setCurrentUser(result);
         alert('Has iniciado sesión exitosamente!');

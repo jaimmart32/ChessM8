@@ -1,7 +1,6 @@
 //@ts-check
 
 export class User {
-    id;
     username;
     email;
     password;
@@ -18,7 +17,6 @@ export class User {
      * @throws {Error} - Si el username o el email están vacíos.
      */
     constructor(username, email, password, avatarUrl = null){
-        this.id = crypto.randomUUID();// usar autoincremento en producción con variable static??
         this.username = username;
         this.email = email;
         this.password = password;

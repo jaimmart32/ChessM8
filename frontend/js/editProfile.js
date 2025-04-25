@@ -56,7 +56,7 @@ if(form){
         };
 
         try{
-            const result = await getAPIData('http://127.0.0.1:1337/update-profile', 'PUT', JSON.stringify(updatedUser));
+            const result = await getAPIData('http://127.0.0.1:1337/api/update-profile', 'PUT', JSON.stringify(updatedUser));
 
             setCurrentUser(result);
             alert('Perfil actualizado correctamente');
