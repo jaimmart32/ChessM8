@@ -7,6 +7,7 @@ export class User {
     avatarUrl;
     createdAt;
     stats;
+    /** @type {string[]} */friends;
 
     /**
      * Constructor de la clase User.
@@ -27,5 +28,6 @@ export class User {
             losses: 0,
             draws: 0
         };
+        this.friends = [];
     }
 }

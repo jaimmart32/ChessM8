@@ -75,3 +75,24 @@ export async function handleGetUsers(req, res){
     
     res.status(200).send(users);
 }
+
+export async function handleAddFriend(req, res){
+    const { userId, friendId } = req.body;
+
+    if(!userId || !friendId){
+        return res.status(400).send({ error: 'Faltan los ID de los usuarios'});
+    }
+    if(userId === friendId){
+        return res.status(400).send({error: 'Tristemente no puedes agregarte como amigo'});
+    }
+
+    const updated = await db.users.addFriend(userId, friendId);
+    if(!updated){
+        res.status(404).send({ error: 'Usuario no encontrado o no actualizado'});
+    }
+
+    return res.status(200).send({ success: true, message: 'Amigo añadido correctamente'});
+}
+
+//TO_DO: En el front donde se recibe la respuesta de handleAddFriends distinguir entre distintos
+// status o mensaje para ser mas especifico

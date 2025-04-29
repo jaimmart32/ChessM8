@@ -9,7 +9,8 @@ export const db = {
         count: countUsers,
         create: createUser,
         update: updateUser,
-        delete: deleteUser
+        delete: deleteUser,
+        addFriend: addFriend
         // signIn: signInUser
     },
     games: {
@@ -103,6 +104,28 @@ async function deleteUser(id){
    const usersCollection = chessDB.collection('users');
    const result = await usersCollection.deleteOne({ _id: new ObjectId(id) });
    return result.deletedCount > 0;
+}
+
+/* FRIENDS */
+
+/**
+ * @summary Agrega un usuario como amigo de otro usuario.
+ * @param {string} userId - El id del usuario que va a agregar un amigo.
+ * @param {string} friendId - El id del usuario a agregar como amigo.
+ * @returns {Promise<boolean>} Promesa que devuelve true si el usuario ha sido
+ * agregado correctamente como amigo, false en caso contrario.
+ */
+async function addFriend(userId, friendId){
+    const mdbClient = new MongoClient(URI);
+    const chessDB = mdbClient.db('ChessM8');
+    const usersCollection = chessDB.collection('users');
+
+    const result = await usersCollection.updateOne(
+        { _id: new ObjectId(userId) },
+        { $addToSet: {friends: friendId }}//evita duplicados(Añade si no existe)
+    )
+
+    return result.modifiedCount > 0;
 }
 
 // TO_DO: crear una pagina nueva en la que se puedan buscar usuarios por su username.

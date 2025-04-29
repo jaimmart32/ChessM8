@@ -1,15 +1,17 @@
 import { getAPIData } from "./fetch.js";
 import { requireAuth } from "./authGuard.js";
+import { getCurrentUser } from "./db.js";
 
 /**
  * @typedef {Object} User
- * @property {string} id
+ * @property {string} _id
  * @property {string} username
  * @property {string} email
  * @property {string} password
  * @property {string} avatarUrl
  * @property {string} createdAt
  * @property {{wins: number, losses: number, draws: number}} stats
+ * @property {string[]} friends
  */
 
 requireAuth();
@@ -65,18 +67,69 @@ async function fetchUsers(){
 
     //Rellenar la lista con los resultados
     result.forEach((/** @type {User} */user) => {
-       const userP = document.createElement('p');
+       const userDiv = document.createElement('div');
+       userDiv.classList.add('user-item');
+
        const usernameStrong = document.createElement('strong');
        usernameStrong.textContent = user.username;
-       userP.appendChild(usernameStrong);
+
        const createdAt = new Date(user.createdAt).toLocaleDateString('es-ES');
-       userP.append(` (Se unió el ${createdAt})`);
-       usersList?.appendChild(userP);
+
+       const joinText = document.createElement('span');
+       joinText.textContent = ` (Se unió el ${createdAt})`;
+
+       const addButton = document.createElement('button');
+       addButton.classList.add('btn');
+       addButton.textContent = 'Agregar amigo';
+       addButton.addEventListener('click', () => addFriend(user._id))
+    
+       //Montar el div y agregarlo a la lista
+       userDiv.appendChild(usernameStrong);
+       userDiv.appendChild(joinText);
+       userDiv.appendChild(addButton);
+       usersList?.appendChild(userDiv);
     });
 
     //Actualizar pagina
     if(currentPageSpan)
         currentPageSpan.textContent = `Página ${currentPage}`;
+}
+
+
+/**
+ * Agrega un usuario con el id 'friendId' como amigo.
+ * 
+ * @param {string} friendId El id del usuario a agregar como amigo.
+ */
+async function addFriend(friendId){
+    const currentUser = getCurrentUser();
+    if(!currentUser){
+        alert('No has iniciado sesion!');
+        window.location.href = 'login.html'
+        return;
+    }
+    try{
+        const result = await getAPIData(
+            'http://127.0.0.1:1337/api/add-friend',
+            'POST',
+            JSON.stringify({
+                userId: currentUser._id,
+                friendId: friendId
+
+            })
+        );
+
+        if(result && result.success){
+            alert('Amigo añadido exitosamente!');
+        }
+        else{
+            alert('No se pudo agregar al amigo.');
+        }
+    }
+    catch(err){
+        console.error('Error al agregar amigo: ', err);
+        alert('Ocurrió un error inesperado.');
+    }
 }
 
 //consulta inicial
