@@ -63,3 +63,15 @@ export async function handleUpdateProfile(req, res){
     }
     return res.status(200).send(updatedData);
 }
+
+export async function handleGetUsers(req, res){
+    const { username = '', page = 1, limit = 10 } = req.query;
+
+    const filter = username ? {
+        username: { $regex: username, $options: 'i'}//insensitive mayus
+    } : {};
+
+    const users = await db.users.getPaginated(filter, parseInt(page), parseInt(limit));
+    
+    res.status(200).send(users);
+}

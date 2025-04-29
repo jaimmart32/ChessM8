@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Amigos | ChessM8</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+    <h1>Ajedrez App</h1>
+    <nav>
+      <a href="index.html">Inicio</a>
+      <a href="game.html">Jugar</a>
+      <a href="profile.html" id="profile-link">Perfil</a>
+      <a href="login.html" id="login-link">Iniciar sesión</a>
+      <a href="register.html" id="register-link">Registrarse</a>
+      <a href="#" id="logout-link">Logout</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="friends-search">
+      <h2>Buscar usuarios</h2>
+
+      <form id="search-form">
+        <input type="text" id="search-input" placeholder="Buscar por username...">
+        <button type="submit" class="btn">Buscar</button>
+      </form>
+
+      <div id="users-list"></div>
+
+      <div id="pagination">
+        <button id="prev-page" class="btn">Anterior</button>
+        <span id="current-page">Página 1</span>
+        <button id="next-page" class="btn">Siguiente</button>
+      </div>
+
+    </section>
+  </main>
+
+  <script type="module" src="js/friends.js"></script>
+  <script type="module" src="js/logout.js"></script>
+  <script type="module" src="js/navVisibility.js"></script>
+</body>
+</html>

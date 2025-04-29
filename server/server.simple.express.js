@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { crud } from './server.crud.js'
 import { db } from './server.mongodb.js';
-import { handleSignIn, handleLogin, handleUpdateProfile } from './controllers/users.js';
+import { handleSignIn, handleLogin, handleUpdateProfile, handleGetUsers } from './controllers/users.js';
 
 const app = express();
 const port = process.env.PORT;
@@ -82,14 +82,16 @@ app.put('/update-profile', (req, res) => {
 });
 
 // API ENDPOINTS CON MONGODB
+
+// Users
 app.get('/api/count/users', async (req, res) => {
     const users = await db.users.count();
     res.send(`En este momento hay ${users} usuarios registrados en la base de datos.`);
 })
-
 app.post('/api/register', handleSignIn);
 app.post('/api/login', handleLogin);
 app.put('/api/update-profile', handleUpdateProfile);
+app.get('/api/users', handleGetUsers);
 
 app.listen(port, () => {
     console.log(`example app listening on port ${port}`);

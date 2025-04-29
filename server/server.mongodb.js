@@ -5,6 +5,7 @@ const URI = process.env.MONGO_URI;
 export const db = {
     users: {
         get: getUsers,
+        getPaginated: getPaginatedUsers,
         count: countUsers,
         create: createUser,
         update: updateUser,
@@ -44,6 +45,13 @@ async function getUsers(filter){
     return await usersCollection.find(filter).toArray();
 }
 
+async function getPaginatedUsers(filter, page = 1, limit = 10){
+    const mdbClient = new MongoClient(URI);
+    const chessDB = mdbClient.db('ChessM8');
+    const usersCollection = chessDB.collection('users');
+
+    return await usersCollection.find(filter).skip((page - 1) * limit).limit(limit).toArray();
+}
 async function createUser(user){
    const mdbClient = new MongoClient(URI);
    const chessDB = mdbClient.db('ChessM8');
@@ -96,3 +104,7 @@ async function deleteUser(id){
    const result = await usersCollection.deleteOne({ _id: new ObjectId(id) });
    return result.deletedCount > 0;
 }
+
+// TO_DO: crear una pagina nueva en la que se puedan buscar usuarios por su username.
+//En un futuro podrian buscarse y posteriormente agregar como amigos. Tambien
+// un apartado dentro del perfil que pueda mostrar el historial de tus partidas con paginacion
