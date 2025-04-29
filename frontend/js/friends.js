@@ -65,8 +65,17 @@ async function fetchUsers(){
         return;
     }
 
+    const currentUser = getCurrentUser();
+
     //Rellenar la lista con los resultados
     result.forEach((/** @type {User} */user) => {
+
+        if(!currentUser || user._id === currentUser._id){
+            return;//Saltarse a si mismo
+        }
+
+        const isAlreadyFriend = currentUser.friends.includes(user._id);
+
        const userDiv = document.createElement('div');
        userDiv.classList.add('user-item');
 
@@ -78,15 +87,19 @@ async function fetchUsers(){
        const joinText = document.createElement('span');
        joinText.textContent = ` (Se unió el ${createdAt})`;
 
-       const addButton = document.createElement('button');
-       addButton.classList.add('btn');
-       addButton.textContent = 'Agregar amigo';
-       addButton.addEventListener('click', () => addFriend(user._id))
-    
        //Montar el div y agregarlo a la lista
        userDiv.appendChild(usernameStrong);
        userDiv.appendChild(joinText);
-       userDiv.appendChild(addButton);
+
+       //Agregar boton si no es su amigo
+       if(!isAlreadyFriend){
+        const addButton = document.createElement('button');
+        addButton.classList.add('btn');
+        addButton.textContent = 'Agregar amigo';
+        addButton.addEventListener('click', () => addFriend(user._id))
+        userDiv.appendChild(addButton);
+       } 
+
        usersList?.appendChild(userDiv);
     });
 
@@ -121,6 +134,14 @@ async function addFriend(friendId){
 
         if(result && result.success){
             alert('Amigo añadido exitosamente!');
+
+            //actualizar lista en localStorage
+            if(!currentUser.friends.includes(friendId)){
+                currentUser.friends.push(friendId);
+                localStorage.setItem('CURRENT_USER', JSON.stringify(currentUser));
+            }
+            //Refrescar busqueda para no mostrar el boton si ya esta en friends
+            await fetchUsers();
         }
         else{
             alert('No se pudo agregar al amigo.');
