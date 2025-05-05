@@ -1,121 +1,38 @@
-import { User } from './classes/User.js';
+// import { User } from './classes/User.js';
 import { setCurrentUser } from './db.js';
-import { validateUsername, validateEmail, validatePassword } from './validate.js';
+// import { validateUsername, validateEmail, validatePassword } from './validate.js';
 // import { store } from './store/redux.js';
-import { getAPIData, HttpError } from './fetch.js';
 
-let registerForm = document.getElementById('register-form');
-let loginForm = document.getElementById('login-form');
+//// @ts-expect-error Hazte caso
+// window.addEventListener('stateChanged', (/** @type {CustomEvent}*/event) => {
+//     console.log('Cambio de estado en redux: ', event.detail);
+// })
 
-registerForm?.addEventListener('submit', onRegister);
-loginForm?.addEventListener('submit', onLogin);
-// @ts-expect-error Hazte caso
-window.addEventListener('stateChanged', (/** @type {CustomEvent}*/event) => {
-    console.log('Cambio de estado en redux: ', event.detail);
-})
-/**
- * Event handler for the register form submission.
- * It validates the input fields, checks for username and email availability,
- * creates a new user and adds it to the database.
- * Then, it alerts the user of the successful registration and redirects to
- * the login page.
- * @param {Event} event - The submit event of the register form.
- */
-async function onRegister(event) {
-    event.preventDefault();
+const signInFormComponent = document.querySelector('signin-form-lit');
+signInFormComponent?.addEventListener('signin-form-submitted', (event) => {
+    const { success, user, error } = event.detail;
 
-    const form = /**@type {HTMLFormElement}*/(event.target);
-    const formData = new FormData(form);
-
-    const username = formData.get('username')?.toString().trim();
-    const email = formData.get('email')?.toString().trim();
-    const password = formData.get('password')?.toString();
-
-    const validations = [
-        {valid: !!username, message: 'Nombre de usuario no proporcionado'},
-        {valid: !!email, message:'Email no proporcionado'},
-        {valid: !!password, message: 'Password no proporcionada'},
-        {valid: validateUsername(username), message: 'Nombre de usuario inválido'},
-        {valid: validateEmail(email), message: 'Email inválido'},
-        {valid: validatePassword(password), message: 'Password inválida'},
-        // {valid: !store.user.getByUsername(/** @type {string} */(username)),  message: 'Este username ya está registrado'},
-        // {valid: !store.user.getByEmail(/** @type {string} */(email)), message: 'Este email ya está registrado'}
-    ]
-
-    for(const check of validations){
-        if(!check.valid){
-            alert(check.message);
-            return;
-        }
-    }
-
-    const newUser = new User(/**@type {string}*/(username), /**@type {string}*/(email), /**@type {string}*/(password));
-    // addUser(newUser);
-    //store.user.create(newUser, () => {
-    //    console.log('Usuario creado exitosamente via store.');
-    //});
-
-    //TODO: utilizar el endpoint nuevo /register y manejar la respuesta, si hay error avisar de que el email o el username estan cogidos y sino derivar a profile.html
-    try {
-        await getAPIData(
-            'http://127.0.0.1:1337/api/register',
-            'POST',
-            JSON.stringify(newUser)
-        );
-
-        alert('Registro exitoso, puedes iniciar sesión!');
+    if(success) {
+        console.log(user);
+        alert('Registro exitoso, puedes iniciar sesion!');
         window.location.href = 'login.html';
-    } catch (err) {
-        if (err instanceof HttpError && err.response.status === 409) {
-            alert('El email o el username ya están registrados.');
-        } else {
-            console.error('Error inesperado', err);
-            alert('Error al registrarse, intentalo más tarde.');
-        }
     }
-}
-
-/**
- * Event handler for the login form submission.
- * It validates the input fields, checks if the user exists and the password is correct,
- * sets the current user and redirects to the profile page.
- * @param {Event} event - The submit event of the login form.
- */
-async function onLogin(event) {
-    event.preventDefault();
-
-    let form = /**@type {HTMLFormElement}*/(event.target);
-    let formData = new FormData(form);
-
-    let email = formData.get('email')?.toString().trim();
-    let password = formData.get('password')?.toString();
-
-    if(!email || !password){
-        return alert('Debes de completar todos los campos.');
+    else {
+        alert(error)
     }
-
-    const credentials = {email, password};
-    // let user = findUserByEmail(email);
-    // let user = store.user.getByEmail(/** @type {string} */(email));
-
-    // if(!user) return alert('No existe un usuario con ese email.');
-    // if(!checkPassword(user, password)) return alert('La contraseña introducida es incorrecta.');
+})
 
 
-    try {
-        const result = await getAPIData('http://127.0.0.1:1337/api/login', 'POST', JSON.stringify(credentials));
+const loginFormComponent = document.querySelector('login-form-lit');
+loginFormComponent?.addEventListener('login-form-submitted', (event) => {
+    const { success, user, error } = event.detail;
 
-        setCurrentUser(result);
-        alert('Has iniciado sesión exitosamente!');
+    if(success) {
+        setCurrentUser(user);
+        alert('Has iniciado sesión exitosamente!AAAAAAAAAA');
         window.location.href = 'profile.html';
-
-    } catch (err) {
-        if (err instanceof HttpError && err.response.status === 401) {
-            alert('Credenciales incorrectas.');
-        } else {
-            console.error('Error inesperado en login', err);
-            alert('Error al iniciar sesión. Inténtalo más tarde.');
-        }
     }
-
-}
+    else {
+        alert(error);
+    }
+})

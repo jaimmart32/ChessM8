@@ -24,6 +24,7 @@ export class SignInForm extends HTMLElement {
     async connectedCallback(){
         console.log('Componente SignInForm añadido al DOM.');
 
+        // Habilita el shadow DOM encapsulado para el componente. Todo lo que se meta en this.shadowRoot será visualmente aislado del resto del DOM.
         this.attachShadow({ mode: "open" });
         console.log('Creado el Shadow root, Shadow DOM activado, ahora se puede añadir el template.');
 
@@ -46,4 +47,5 @@ export class SignInForm extends HTMLElement {
     }
 }
 
+//API nativa del navegador para registrar elementos personalizados (Web Components).
 customElements.define('signin-form', SignInForm);
