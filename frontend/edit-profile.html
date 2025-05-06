@@ -22,22 +22,9 @@
   </header>
 
   <main class="login-container">
-      <h2>Editar perfil</h2>
-      <form id="edit-profile-form" class="login-form">
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username">
-
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email">
-
-        <label for="password">Nueva contraseña</label>
-        <input type="password" id="password" name="password" placeholder="********">
-
-        <label for="confirm-password">Confirmar contraseña</label>
-        <input type="password" id="confirm-password" name="confirm-password" placeholder="********">
-
-        <button type="submit" class="btn">Guardar cambios</button>
-      </form>
+      <edit-profile-form-lit>
+        <h2>Editar perfil</h2>
+      </edit-profile-form-lit>
 
       <p><a href="profile.html">Volver a mi perfil</a></p>
   </main>
@@ -45,5 +32,6 @@
   <script type="module" src="js/editProfile.js"></script>
   <script type="module" src="js/logout.js"></script>
   <script type="module" src="js/navVisibility.js"></script>
+  <script type="module" src="js/components/bundle.js"></script>
 </body>
 </html>
