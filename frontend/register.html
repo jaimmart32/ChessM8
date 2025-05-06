@@ -10,29 +10,12 @@
   <main class="login-container">
     <h2>Crear cuenta</h2>
 
-    <form id="register-form" class="login-form">
-      <label for="username">Nombre de usuario</label>
-      <input type="text" id="username" name="username" placeholder="pepito22" required>
-
-      <label for="email">Correo electrónico</label>
-      <input type="email" id="email" name="email" placeholder="correo@ejemplo.com" required>
-
-      <label for="password">Contraseña</label>
-      <input type="password" id="password" name="password" placeholder="********" required>
-
-      <button type="submit" class="btn">Registrarse</button>
-    </form>
+    <signin-form-lit></signin-form-lit>
 
     <p class="form-footer">
       ¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a>
     </p>
   </main>
-
-  <signin-form></signin-form>
-
-  <p> A CONTINUACION EL WEB COMPONENT CON LIT </p>
-
-  <signin-form-lit></signin-form-lit>
 
   <script type="module" src="js/auth.js"></script>
   <script type="module" src="js/components/bundle.js"></script>
