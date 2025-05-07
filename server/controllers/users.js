@@ -1,4 +1,5 @@
 import { db } from '../server.mongodb.js';
+import { ObjectId } from 'mongodb';
 
 /*Gracias a los middlewares que ya estan configurados en el server.express.js:
 app.use(bodyParser.json()); todas las peticiones con Content-Type: application/json 
@@ -94,5 +95,30 @@ export async function handleAddFriend(req, res){
     return res.status(200).send({ success: true, message: 'Amigo añadido correctamente'});
 }
 
-//TO_DO: En el front donde se recibe la respuesta de handleAddFriends distinguir entre distintos
-// status o mensaje para ser mas especifico
+// Recibe un array de Ids en el body y devuelve la info de esos usuarios
+//Se convierte cada ID en un ObjectId.
+//Se pasa ese array al operador $in para buscar múltiples documentos por ID.
+//Se ejecuta la consulta y se devuelve un array de usuarios encontrados.
+export async function handleGetFriends(req, res) {
+    const { friendIds } = req.body;
+
+    if(!friendIds || !Array.isArray(friendIds)){
+        return res.status(400).send({ error: 'Lista de IDs no proporconada o inválida'});
+    }
+
+    try {
+        const friends = await db.users.get({
+            _id: { $in: friendIds.map(id => new ObjectId(id))}
+        });
+
+        if(!friends.length){
+            return res.status(404).send( { error: 'No se encontraron amigos con esos IDs.'});
+        }
+
+        res.status(200).send(friends);
+    }
+    catch(err) {
+        console.error('Error al  obtener la lista de amigos: ', err.message);
+        res.status(500).send({ error: 'Error al obtener amigos'});
+    }
+}

@@ -255,3 +255,63 @@ body {
   font-weight: bold;
   font-size: 16px;
 }
+
+/* LISTA DE AMIGOS */
+
+/* Banner de llamada a la lista */
+.my-friends-highlight {
+  max-width: 600px;
+  margin: 30px auto 20px;
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 0 12px rgb(0 0 0 / 10%);
+  text-align: center;
+
+  h2 {
+    margin-bottom: 10px;
+    color: #333;
+  }
+
+  p {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+}
+
+/* Amigo (Friend) - Estilos del div principal */
+.friend-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background-color: white;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 0 12px rgb(0 0 0 / 10%);
+  transition: box-shadow 0.3s ease;
+}
+
+.friend-item:hover {
+  box-shadow: 0 0 15px rgb(0 0 0 / 10%);
+}
+
+/* Imagen del avatar del amigo */
+.friend-item img.avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Información del usuario */
+.friend-item strong {
+  font-size: 18px;
+  color: #333;
+}
+
+.friend-item span {
+  font-size: 14px;
+  color: #777;
+}
