@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { crud } from './server.crud.js'
 import { db } from './server.mongodb.js';
-import { handleSignIn, handleLogin, handleUpdateProfile, handleGetUsers, handleAddFriend, handleGetFriends } from './controllers/users.js';
+import { handleSignIn, handleLogin, handleUpdateProfile, handleGetUsers, handleAddFriend, handleGetFriends, handleRemoveFriend } from './controllers/users.js';
 
 const app = express();
 const port = process.env.PORT;
@@ -95,6 +95,7 @@ app.get('/api/users', handleGetUsers);
 
 app.post('/api/add-friend', handleAddFriend);
 app.post('/api/friends', handleGetFriends);
+app.post('/api/remove-friend', handleRemoveFriend);
 
 app.listen(port, () => {
     console.log(`example app listening on port ${port}`);

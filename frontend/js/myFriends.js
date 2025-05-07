@@ -1,4 +1,4 @@
-import { getCurrentUser } from "./db.js";
+import { getCurrentUser, setCurrentUser } from "./db.js";
 import { getAPIData } from "./fetch.js";
 import { requireAuth } from "./authGuard.js";
 
@@ -59,13 +59,46 @@ function renderFriends(friends) {
         const joinText = document.createElement('span');
         joinText.textContent = ` (Se unió el ${createdAt})`;
 
+        //Crear boton para eliminar amigo
+        const removeButton = document.createElement('button');
+        removeButton.classList.add('btn', 'btn-remove');
+        removeButton.textContent = 'Eliminar amigo';
+        removeButton.addEventListener('click', async () => {
+            await removeFriend(friend._id);
+            fetchFriends();//Recargar lista tras eliminar
+        })
         //Montar el div del amigo y agregarlo a la lista
         friendDiv.appendChild(avatarImg);
         friendDiv.appendChild(usernameStrong);
         friendDiv.appendChild(joinText);
+        friendDiv.appendChild(removeButton);
 
         friendsList?.appendChild(friendDiv);
     });
 }
 
+async function removeFriend(friendId) {
+    try{
+        const result = await getAPIData('http://127.0.0.1:1337/api/remove-friend',
+            'POST',
+            JSON.stringify({ userId: currentUser._id, friendId })
+        );
+
+        if(result && result.success){
+            //Actualizar localStorage
+            const updatedFriends = currentUser.friends.filter(id => id !== friendId);
+            currentUser.friends = updatedFriends;
+            setCurrentUser(currentUser);
+            alert('Amigo eliminado exitosamente');
+        }
+        else{
+            alert('Error al eliminar el amigo');
+        }
+    }
+    catch(err) {
+        console.error('Error al eliminar amigo: ', err);
+        alert('Error al intentar eliminar un amigo de la lista.')
+    }
+    
+}
 fetchFriends();

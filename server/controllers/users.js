@@ -74,7 +74,7 @@ export async function handleGetUsers(req, res){
 
     const users = await db.users.getPaginated(filter, parseInt(page), parseInt(limit));
     
-    res.status(200).send(users);
+    return res.status(200).send(users);
 }
 
 export async function handleAddFriend(req, res){
@@ -89,10 +89,35 @@ export async function handleAddFriend(req, res){
 
     const updated = await db.users.addFriend(userId, friendId);
     if(!updated){
-        res.status(404).send({ error: 'Usuario no encontrado o no actualizado'});
+        return res.status(404).send({ error: 'Usuario no encontrado o no actualizado'});
     }
 
     return res.status(200).send({ success: true, message: 'Amigo añadido correctamente'});
+}
+
+export async function handleRemoveFriend(req, res) {
+    const { userId, friendId } = req.body;
+
+    if(!userId || !friendId){
+        return res.status(400).send({ error: 'Faltan datos para eliminar al amigo'});
+    
+    }
+
+    const user = await db.users.get({ _id: new ObjectId(userId) });
+    if(user.length === 0){
+        return res.status(404).send({ error: 'Usuario no encontrado.'});
+    }
+
+    const updatedFriends = user[0].friends.filter(id => id !== friendId);
+
+    const success = await db.users.update(userId, { friends: updatedFriends });
+
+    if(success){
+        return res.status(200).send({ success: true });
+    }
+    else{
+        return res.status(500).send({ error: 'No se pudo eliminar al amigo.'});
+    }
 }
 
 // Recibe un array de Ids en el body y devuelve la info de esos usuarios

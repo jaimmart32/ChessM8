@@ -315,3 +315,19 @@ body {
   font-size: 14px;
   color: #777;
 }
+
+/* Botón de eliminar amigo */
+.btn-remove {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    margin-left: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-remove:hover {
+    background-color: #ff1a1a;
+}
