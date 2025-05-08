@@ -55,6 +55,16 @@ function handleClick(square) {
     const fromCol = parseInt(selectedSquare.dataset.col);
     const selectedPiece = boardState[fromRow][fromCol];
 
+    //Comprobar que es una pieza del turno actual antes de moverla. De no hacerlo
+    // se podria clickar una pieza del turno correspondiente, entrando en selectedSquare
+    // y luego clickar en una del otro color para despues poder moverla cuando no es
+    // su turno
+    if(!isTurnCorrect(selectedPiece)) {
+      selectedSquare.classList.remove('selected');
+      selectedSquare = null;
+      return;
+    }
+
     const legalMoves = getLegalMoves(selectedPiece, fromRow, fromCol);
     const isLegalMove = legalMoves.some(([r, c]) => r === row && c === col);
     // Si es un movimiento legal se mueve la pieza
@@ -115,9 +125,56 @@ function getLegalMoves(piece, row, col){
     case 'b':
       return getBishopMoves(row, col, 'black');
     
+    case 'R':
+      return getRookMoves(row, col, 'white');
+    
+    case 'r':
+      return getRookMoves(row, col, 'black');
+    
+    case 'Q':
+      return getQueenMoves(row, col, 'white');
+    
+    case 'q':
+      return getQueenMoves(row, col, 'black');
+    
+    case 'K':
+      return getKingMoves(row, col, 'white');
+    
+    case 'k':
+      return getKingMoves(row, col, 'black');
+
     default:
       return [];
   }
+}
+
+function getKingMoves(row, col, color) {
+  const moves = [];
+
+  const directions = [
+    [-1, 0],  // ↑
+    [+1, 0],  // ↓
+    [0, -1],  // ←
+    [0, +1],  // →
+    [-1, -1], // ↖
+    [-1, +1], // ↗
+    [+1, -1], // ↙
+    [+1, +1]  // ↘
+  ];
+
+  for(const [dirRow, dirCol] of directions){
+    const r = row + dirRow;
+    const c = col + dirCol;
+
+    if(!isInsideBoard(r, c)) continue;
+
+    const target = boardState[r][c];
+    if(!target || !isSameColorFromColor(color, target)){
+      moves.push([r, c]);
+    } 
+  }
+
+  return moves;
 }
 
 function getWhitePawnMoves(row, col){
@@ -176,9 +233,9 @@ function getKnightMoves(row, col, color){
     [+2, -1], [+2, +1],
   ];
 
-  for(const [dirX, dirY] of offsets){
-    const r = row + dirX;
-    const c = col + dirY;
+  for(const [dirRow, dirCol] of offsets){
+    const r = row + dirRow;
+    const c = col + dirCol;
 
     if(!isInsideBoard(r, c)) continue;
 
@@ -201,9 +258,9 @@ function getBishopMoves(row, col, color){
     [+1, +1]  // ↘
   ];
 
-  for(const [dirX, dirY] of directions){
-    let r = row + dirX;
-    let c = col + dirY;
+  for(const [dirRow, dirCol] of directions){
+    let r = row + dirRow;
+    let c = col + dirCol;
 
     while(isInsideBoard(r, c)){
       const target = boardState[r][c];
@@ -218,12 +275,57 @@ function getBishopMoves(row, col, color){
       else{
         break;// mismo color, no puede avanzar mas en esa dirección
       }
-      r += dirX;
-      c += dirY;
+      r += dirRow;
+      c += dirCol;
     }
   }
   return moves;
 }
+
+function getRookMoves(row, col, color) {
+  const moves = [];
+
+  const directions = [
+    [-1, 0], // ↑
+    [+1, 0], // ↓
+    [0, -1], // ←
+    [0, +1]  // →
+  ];
+
+  for(const [dirRow, dirCol] of directions) {
+    let r = row + dirRow;
+    let c = col + dirCol;
+
+    while(isInsideBoard(r, c)) {
+      const target = boardState[r][c];
+
+      if(!target) {
+        moves.push([r, c]);
+      }
+      else if(!isSameColorFromColor(color, target)) {
+        moves.push([r, c]);// Puede capturar al enemigo
+        break;
+      }
+      else {
+        break;// Mismo color, no puede avanzar mas en la direciion
+      }
+      r += dirRow;
+      c += dirCol;
+    }
+  }
+
+  return moves;
+}
+
+function getQueenMoves(row, col, color) {
+  //Combinar movimientos legales de alfil y torre
+  const diagonalMoves = getBishopMoves(row, col, color);
+  const straightMoves = getRookMoves(row, col, color);
+
+  //concatenar movimientos de ambos tipos
+  return [...diagonalMoves, ...straightMoves];
+}
+
 function isInsideBoard(row, col){
   return row >= 0 && row < 8 && col >= 0 && col < 8;
 }
