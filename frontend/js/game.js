@@ -69,7 +69,17 @@ function handleClick(square) {
     const isLegalMove = legalMoves.some(([r, c]) => r === row && c === col);
     // Si es un movimiento legal se mueve la pieza
     if(isLegalMove){
-      console.log('Dentro de seleccion de casilla vacia');
+      //simular movimiento
+      const simulatedBoard = simulateMove(fromRow, fromCol, row, col);
+
+      //comprobar si se dejaria al rey en jaque
+      const isInCheck = isKingInCheck(currentTurn, simulatedBoard);
+      if(isInCheck){
+        alert('El rey estaria en jaque tras el movimiento, movimiento inválido');
+        return;
+      }
+
+      //movimiento valido,actualizar estado del tablero
       boardState[row][col] = selectedPiece;
       boardState[fromRow][fromCol] = '';
       currentTurn = currentTurn === 'white' ? 'black' : 'white';
@@ -104,51 +114,51 @@ function isSameColorFromColor(color, piece){
           (color === 'black' && piece === piece.toLowerCase());
 }
 
-function getLegalMoves(piece, row, col){
+function getLegalMoves(piece, row, col, board = boardState){
   switch(piece){
 
     case 'P':
-      return getWhitePawnMoves(row, col);
+      return getWhitePawnMoves(row, col, board);
     
     case 'p':
-      return getBlackPawnMoves(row, col);
+      return getBlackPawnMoves(row, col, board);
     
     case 'H':
-      return getKnightMoves(row, col, 'white');
+      return getKnightMoves(row, col, 'white', board);
     
     case 'h':
-      return getKnightMoves(row, col, 'black');
+      return getKnightMoves(row, col, 'black', board);
     
     case 'B':
-      return getBishopMoves(row, col, 'white');
+      return getBishopMoves(row, col, 'white', board);
     
     case 'b':
-      return getBishopMoves(row, col, 'black');
+      return getBishopMoves(row, col, 'black', board);
     
     case 'R':
-      return getRookMoves(row, col, 'white');
+      return getRookMoves(row, col, 'white', board);
     
     case 'r':
-      return getRookMoves(row, col, 'black');
+      return getRookMoves(row, col, 'black', board);
     
     case 'Q':
-      return getQueenMoves(row, col, 'white');
+      return getQueenMoves(row, col, 'white', board);
     
     case 'q':
-      return getQueenMoves(row, col, 'black');
+      return getQueenMoves(row, col, 'black', board);
     
     case 'K':
-      return getKingMoves(row, col, 'white');
+      return getKingMoves(row, col, 'white', board);
     
     case 'k':
-      return getKingMoves(row, col, 'black');
+      return getKingMoves(row, col, 'black', board);
 
     default:
       return [];
   }
 }
 
-function getKingMoves(row, col, color) {
+function getKingMoves(row, col, color, board = boardState) {
   const moves = [];
 
   const directions = [
@@ -168,7 +178,7 @@ function getKingMoves(row, col, color) {
 
     if(!isInsideBoard(r, c)) continue;
 
-    const target = boardState[r][c];
+    const target = board[r][c];
     if(!target || !isSameColorFromColor(color, target)){
       moves.push([r, c]);
     } 
@@ -177,15 +187,15 @@ function getKingMoves(row, col, color) {
   return moves;
 }
 
-function getWhitePawnMoves(row, col){
+function getWhitePawnMoves(row, col, board = boardState){
   const moves = [];
 
   //Una casilla hacia adelante
-  if(isEmpty(row -1, col)){
+  if(isEmpty(row -1, col, board)){
     moves.push([row - 1, col]);
 
     //desde la fila inicial puede mover 2 casillas
-    if(row === 6 && isEmpty(row - 2, col)){
+    if(row === 6 && isEmpty(row - 2, col, board)){
       moves.push([row -2, col]);
     }
   }
@@ -201,15 +211,15 @@ function getWhitePawnMoves(row, col){
   return moves;
 }
 
-function getBlackPawnMoves(row, col){
+function getBlackPawnMoves(row, col, board = boardState){
   const moves = [];
 
   //casilla hacia adelante
-  if(isEmpty(row + 1, col)){
+  if(isEmpty(row + 1, col, board)){
     moves.push([row + 1, col]);
 
     //desde la fila inicial puede mover 2 casillas
-    if(row === 1 && isEmpty(row + 2, col)){
+    if(row === 1 && isEmpty(row + 2, col, board)){
       moves.push([row + 2, col]);
     }
   }
@@ -224,7 +234,7 @@ function getBlackPawnMoves(row, col){
   return moves;
 }
 
-function getKnightMoves(row, col, color){
+function getKnightMoves(row, col, color, board = boardState){
   const moves = [];
   const offsets = [
     [-2, -1], [-2, +1],
@@ -239,7 +249,7 @@ function getKnightMoves(row, col, color){
 
     if(!isInsideBoard(r, c)) continue;
 
-    const target =  boardState[r][c];
+    const target =  board[r][c];
     if(!target || !isSameColorFromColor(color, target)){
       moves.push([r, c]);
     }
@@ -248,7 +258,7 @@ function getKnightMoves(row, col, color){
   return moves;
 }
 
-function getBishopMoves(row, col, color){
+function getBishopMoves(row, col, color, board = boardState){
   const moves = [];
 
   const directions = [
@@ -263,7 +273,7 @@ function getBishopMoves(row, col, color){
     let c = col + dirCol;
 
     while(isInsideBoard(r, c)){
-      const target = boardState[r][c];
+      const target = board[r][c];
 
       if(!target){
         moves.push([r, c]);
@@ -282,7 +292,7 @@ function getBishopMoves(row, col, color){
   return moves;
 }
 
-function getRookMoves(row, col, color) {
+function getRookMoves(row, col, color, board = boardState) {
   const moves = [];
 
   const directions = [
@@ -297,7 +307,7 @@ function getRookMoves(row, col, color) {
     let c = col + dirCol;
 
     while(isInsideBoard(r, c)) {
-      const target = boardState[r][c];
+      const target = board[r][c];
 
       if(!target) {
         moves.push([r, c]);
@@ -317,10 +327,10 @@ function getRookMoves(row, col, color) {
   return moves;
 }
 
-function getQueenMoves(row, col, color) {
+function getQueenMoves(row, col, color, board = boardState) {
   //Combinar movimientos legales de alfil y torre
-  const diagonalMoves = getBishopMoves(row, col, color);
-  const straightMoves = getRookMoves(row, col, color);
+  const diagonalMoves = getBishopMoves(row, col, color, board);
+  const straightMoves = getRookMoves(row, col, color, board);
 
   //concatenar movimientos de ambos tipos
   return [...diagonalMoves, ...straightMoves];
@@ -330,12 +340,12 @@ function isInsideBoard(row, col){
   return row >= 0 && row < 8 && col >= 0 && col < 8;
 }
 
-function isEmpty(row, col){
-  return isInsideBoard(row, col) && boardState[row][col] === '';
+function isEmpty(row, col, board = boardState){
+  return isInsideBoard(row, col) && board[row][col] === '';
 }
 
-function isEnemy(row, col, color){
-  const piece = boardState[row][col];
+function isEnemy(row, col, color, board = boardState){
+  const piece = board[row][col];
   if(!isInsideBoard(row, col) || !piece) return false;
 
   if(color === 'white'){
@@ -345,6 +355,53 @@ function isEnemy(row, col, color){
     return piece === piece.toUpperCase();//es blanca
   }
 }
+
+// COMPROBACION DE SI SE DEJARIA EL REY EN JAQUE CON UN MOVIMIENTO
+
+//Encontrar la posicion del rey para saber si estaría en jaque
+function findKingPosition(color, board) {
+  const kingSymbol = color === 'white' ? 'K' : 'k';
+
+  for(let row = 0; row < 8; row++){
+    for(let col = 0; col < 8; col++){
+      if(board[row][col] === kingSymbol){
+        return [row, col];
+      }
+    }
+  }
+  return null;
+}
+
+//Comprobar si una posicion enemiga deja en jaque al rey
+function isKingInCheck(color, simulatedBoard){
+  const [kingRow, kingCol] = findKingPosition(color, simulatedBoard);
+
+  for(let row = 0; row < 8; row++){
+    for(let col = 0; col < 8; col++){
+      const piece = simulatedBoard[row][col];
+      if(piece && isEnemy(row, col, color, simulatedBoard)){
+        const enemyMoves = getLegalMoves(piece, row, col, simulatedBoard);
+        if(enemyMoves.some(([r, c]) => r === kingRow && c === kingCol)){
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+//Simular el movimiento para validarlo en funcion de si deja en jaque al rey
+function simulateMove(fromRow, fromCol, toRow, toCol) {
+  //Deep copy del tablero
+  const boardCopy = JSON.parse(JSON.stringify(boardState));
+
+  //intercambiar casillas(realizar movimiento)
+  boardCopy[toRow][toCol] = boardCopy[fromRow][fromCol];
+  boardCopy[fromRow][fromCol] = '';
+
+  return boardCopy;
+}
+
 restartBtn.addEventListener('click', () => {
   boardState = JSON.parse(JSON.stringify(initialBoard));
   currentTurn = 'white';
