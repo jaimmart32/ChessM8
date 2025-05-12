@@ -2,6 +2,7 @@
  * @jest-environment jsdom 
  */
 
+/* eslint-disable no-undef */
 import { jest } from '@jest/globals';
 
 //Paréntesis alrededor de {}	Para devolver un objeto literal desde una arrow function

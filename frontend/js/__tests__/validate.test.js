@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { validateEmail, validatePassword, validateUsername } from "../validate.js";
 
 describe('Validaciones de formulario', () => {
