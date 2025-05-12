@@ -82,9 +82,24 @@ function handleClick(square) {
       //movimiento valido,actualizar estado del tablero
       boardState[row][col] = selectedPiece;
       boardState[fromRow][fromCol] = '';
+
+      //Cambio de turno
       currentTurn = currentTurn === 'white' ? 'black' : 'white';
       selectedSquare = null;
       createBoard();
+
+      //Verificar si el oponente esta en jaque tras el movimiento
+      const opponentColor = currentTurn;
+      if(isKingInCheck(opponentColor, boardState)){
+        alert(`Jaque para las ${opponentColor === 'white' ? 'Blancas' : 'Negras'}!`);
+
+        //Verificar si es jaque mate
+        if(isCheckMate(opponentColor)){
+          alert(`Jaque Mate! ${opponentColor === 'white' ? 'Negras' : 'Blancas'} ganan.`);
+          board.innerHTML = '<h2>Partida finalizada</h2>';//Cambiar por limpiar childs y appendChild de h2
+          return;
+        }
+      }
       return;
     }
 
@@ -96,6 +111,7 @@ function handleClick(square) {
     return;
   }
 
+  //se selecciona una pieza del turno corrspondiente
   if(piece && isTurnCorrect(piece)){
     square.classList.add('selected');
     selectedSquare = square;
@@ -400,6 +416,32 @@ function simulateMove(fromRow, fromCol, toRow, toCol) {
   boardCopy[fromRow][fromCol] = '';
 
   return boardCopy;
+}
+
+// JAQUE MATE
+function isCheckMate(color) {
+  for(let row = 0; row < 8; row++){
+    for(let col = 0; col < 8; col++){
+      const piece = boardState[row][col];
+      if(piece && isSameColorFromColor(color, piece)){
+        const legalMoves = getLegalMoves(piece, row, col);
+
+        for(const [r, c] of legalMoves){
+          //simulacion de movimiento
+          const simulatedBoard = JSON.parse(JSON.stringify(boardState));
+          simulatedBoard[r][c] = piece;
+          simulatedBoard[row][col] = '';
+
+          //si no esta en jaque tras el movimiento legal, no es jaque mate
+          if(!isKingInCheck(color, simulatedBoard)){
+            return false;
+          }
+        }
+      }
+    }
+  }
+  //si no hay movimiento legal posible tras el jaque, es jaque mate
+  return true;
 }
 
 restartBtn.addEventListener('click', () => {
