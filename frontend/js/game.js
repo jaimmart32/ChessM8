@@ -79,9 +79,14 @@ function handleClick(square) {
         return;
       }
 
-      //movimiento valido,actualizar estado del tablero
+      //movimiento valido, actualizar estado del tablero
       boardState[row][col] = selectedPiece;
       boardState[fromRow][fromCol] = '';
+
+      //comprobar si un peon coronó
+      if((selectedPiece === 'P' && row === 0) || (selectedPiece === 'p' && row === 7)){
+        handlePromotion(row, col, currentTurn);
+      }
 
       //Cambio de turno
       currentTurn = currentTurn === 'white' ? 'black' : 'white';
@@ -442,6 +447,47 @@ function isCheckMate(color) {
   }
   //si no hay movimiento legal posible tras el jaque, es jaque mate
   return true;
+}
+
+// MANEJO DE LA CORONACION DE UN PEON
+function handlePromotion(row, col, color){
+  //Crear selector de pieza
+  const promotionDiv = document.createElement('div');
+  promotionDiv.classList.add('promotion-container');
+
+  const select = document.createElement('select');
+  const options = ['Q', 'R', 'H', 'B'];
+
+  options.forEach(piece => {
+    const option = document.createElement('option');
+    option.value = color === 'white' ? piece : piece.toLocaleLowerCase();
+    option.textContent = getPieceName(option.value);
+    select.appendChild(option);
+  });
+
+  const confirmButton = document.createElement('button');
+  confirmButton.textContent = 'Coronar';
+  confirmButton.addEventListener('click', () => {
+    const pieceSelection = select.value;
+    boardState[row][col] = pieceSelection;
+    document.body.removeChild(promotionDiv);
+    createBoard();
+  });
+
+  promotionDiv.appendChild(select);
+  promotionDiv.appendChild(confirmButton);
+  document.body.appendChild(promotionDiv);
+}
+
+function getPieceName(piece){
+  switch(piece.toUpperCase()){
+    
+    case 'Q': return 'Dama';
+    case 'R': return 'Torre';
+    case 'H': return 'Caballo';
+    case 'B': return 'Alfil';
+    default: return 'Pieza';
+  }
 }
 
 restartBtn.addEventListener('click', () => {

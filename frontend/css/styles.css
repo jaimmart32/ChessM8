@@ -191,6 +191,24 @@ body {
     font-size: 18px;
     font-weight: bold;
   }
+
+  .promotion-container {
+  position: fixed;
+  top: 30%;
+  left: 40%;
+  background-color: white;
+  padding: 20px;
+  border: 1px solid black;
+  border-radius: 8px;
+  z-index: 10;
+  text-align: center;
+}
+
+.promotion-container select {
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
   
 /* BUSCADOR DE AMIGOS */
 .friends-search {
