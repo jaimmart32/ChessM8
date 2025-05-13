@@ -24,6 +24,20 @@ const initialBoard = [
 // Asi se crea una deepcopy y no comparten referencias.
 let boardState = JSON.parse(JSON.stringify(initialBoard));
 
+//struct para comprobar si se podría enrocar
+let hasMoved = {
+  white: {
+    king: false,
+    rookLeft: false,
+    rookRight: false
+  },
+  black: {
+    king: false,
+    rookLeft: false,
+    rookRight: false
+  }
+};
+
 function createBoard() {
   board.innerHTML = ''; // temporal, sustituiré por bucle
 
@@ -77,6 +91,31 @@ function handleClick(square) {
       if(isInCheck){
         alert('El rey estaria en jaque tras el movimiento, movimiento inválido');
         return;
+      }
+
+      //comprobar si es un rey o una torre para invalidar futuros intentos de enroque
+      if(selectedPiece.toUpperCase() === 'K'){
+        hasMoved[currentTurn].king = true;
+
+        //enroque corto(derecha)
+        if(fromCol === 4 && col === 6 && fromRow === row){
+          console.log('Realizando enroque corto...');
+          //mover torre tambien
+          boardState[row][5] = boardState[row][7];
+          boardState[row][7] = '';
+        }
+
+        //enroque largo(izquierda)
+        if(fromCol === 4 && col === 2 && fromRow === row){
+          console.log('Realizando enroque largo...');
+          //mover torre tambien
+          boardState[row][3] = boardState[row][0];
+          boardState[row][0] = '';
+        }
+      }
+      else if(selectedPiece.toUpperCase() === 'R'){
+        if(fromCol === 0) hasMoved[currentTurn].rookLeft = true;
+        if(fromCol === 7) hasMoved[currentTurn].rookRight = true;
       }
 
       //movimiento valido, actualizar estado del tablero
@@ -204,6 +243,10 @@ function getKingMoves(row, col, color, board = boardState) {
       moves.push([r, c]);
     } 
   }
+
+  // Añadir enroques posibles
+  const castleMoves = getCastleMoves(color);
+  moves.push(...castleMoves);
 
   return moves;
 }
@@ -411,6 +454,12 @@ function isKingInCheck(color, simulatedBoard){
   return false;
 }
 
+//Comprobar jaques a la hora de enrocar
+function isKingInCheckAfterMove(fromRow, fromCol, toRow, toCol, color){
+  const simulatedBoard = simulateMove(fromRow, fromCol, toRow, toCol);
+  return isKingInCheck(color, simulatedBoard);
+}
+
 //Simular el movimiento para validarlo en funcion de si deja en jaque al rey
 function simulateMove(fromRow, fromCol, toRow, toCol) {
   //Deep copy del tablero
@@ -488,6 +537,41 @@ function getPieceName(piece){
     case 'B': return 'Alfil';
     default: return 'Pieza';
   }
+}
+
+// MANEJO DE LOS MOVIMIENTOS DE ENROQUE
+function getCastleMoves(color, board = boardState) {
+  const row = color === 'white' ? 7 : 0;
+  const moves = [];
+
+  //Enroque corto
+  if(!hasMoved[color].king && !hasMoved[color].rookRight){
+    if(
+      isEmpty(row, 5) &&
+      isEmpty(row, 6) &&
+      !isKingInCheck(color, board) &&
+      !isKingInCheckAfterMove(row, 4, row, 5, color) &&
+      !isKingInCheckAfterMove(row, 4, row, 6, color)
+    ) {
+      moves.push([row, 6]);
+    }
+  }
+
+  //Enroque largo
+  if(!hasMoved[color].king && !hasMoved[color].rookLeft){
+    if(
+      isEmpty(row, 3) &&
+      isEmpty(row, 2) &&
+      isEmpty(row, 1) &&
+      !isKingInCheck(color, board) &&
+      !isKingInCheckAfterMove(row, 4, row, 3, color) &&
+      !isKingInCheckAfterMove(row, 4, row, 2, color)
+    ) {
+      moves.push([row, 2]);
+    }
+  }
+
+  return moves;
 }
 
 restartBtn.addEventListener('click', () => {
