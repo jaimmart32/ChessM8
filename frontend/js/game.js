@@ -83,6 +83,7 @@ function handleClick(square) {
     const isLegalMove = legalMoves.some(([r, c]) => r === row && c === col);
     // Si es un movimiento legal se mueve la pieza
     if(isLegalMove){
+      console.log('ES UN MOVIMIENTO LEGAL');
       //simular movimiento
       const simulatedBoard = simulateMove(fromRow, fromCol, row, col);
 
@@ -574,10 +575,27 @@ function getCastleMoves(color, board = boardState) {
   return moves;
 }
 
-restartBtn.addEventListener('click', () => {
+//restablecer el estado del juego
+function resetGameState() {
   boardState = JSON.parse(JSON.stringify(initialBoard));
   currentTurn = 'white';
   selectedSquare = null;
+
+  hasMoved = {
+    white: {
+      king: false,
+      rookLeft: false,
+      rookRight: false
+    },
+    black: {
+      king: false,
+      rookLeft: false,
+      rookRight: false
+    }
+  };  
+}
+restartBtn.addEventListener('click', () => {
+  resetGameState();
   createBoard();
 })
 
