@@ -45,7 +45,7 @@ Una aplicación web de ajedrez desarrollada como proyecto final del bootcamp de 
 
 La app utiliza una estructura basada en los modelos `User` y `Game`, simulados inicialmente en `localStorage`.
 
-![Modelos de datos](assets/modelos-datos.png)
+![Modelos de datos](frontend/assets/modelos-datos.png)
 
 ---
 
