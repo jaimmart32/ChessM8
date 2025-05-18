@@ -14,7 +14,11 @@ export const db = {
         // signIn: signInUser
     },
     games: {
-
+        create: createGame,
+        get: getGame,
+        update: updateGame,
+        delete: deleteGame,
+        getAvailableGames: getAvailableGames
     }
 
 }
@@ -127,6 +131,98 @@ async function addFriend(userId, friendId){
 
     return result.modifiedCount > 0;
 }
+
+
+// CRUD para las partidas
+
+/**
+ * @summary Crea una nueva partida en la base de datos.
+ * @param {Object} game - Los detalles de la partida a crear.
+ * @property {string} game.playerWhite - ID o nombre del jugador con blancas.
+ * @property {string} game.playerBlack - ID o nombre del jugador con negras.
+ * @property {Array<Array<string>>} game.boardState - Estado inicial del tablero.
+ * @property {string} game.turn - Turno inicial, 'white' o 'black'.
+ * @property {string} game.status - Estado inicial de la partida, 'ongoing', 'finished', 'abandoned'.
+ * @returns {Promise<Object>} Promesa que devuelve la partida creada con el ID asignado.
+ */
+
+async function createGame(game) {
+    const mdbClient = new MongoClient(URI);
+    const chessDB = mdbClient.db('ChessM8');
+    const gamesCollection = chessDB.collection('games');
+    const result = await gamesCollection.insertOne(game);
+    return { ...game, _id: result.insertedId };
+}
+
+/**
+ * @summary Recupera una partida de la base de datos por su id.
+ * @param {string} id - El id de la partida a recuperar.
+ * @returns {Promise<Game>} Promesa que devuelve la partida encontrada o null si no existe.
+ */
+async function getGame(id) {
+    const mdbClient = new MongoClient(URI);
+    const chessDB = mdbClient.db('ChessM8');
+    const gamesCollection = chessDB.collection('games');
+    return await gamesCollection.findOne({ _id: new ObjectId(id) });
+}
+
+/**
+ * @summary Actualiza una partida existente en la base de datos.
+ * @param {string} id - El id de la partida a actualizar.
+ * @param {Object} updatedFields - Un objeto con los campos de la partida a
+ * actualizar.
+ * @property {string} [updatedFields.playerWhite] - El nuevo nombre del jugador
+ * con blancas.
+ * @property {string} [updatedFields.playerBlack] - El nuevo nombre del jugador
+ * con negras.
+ * @property {Array<Array<string>>} [updatedFields.boardState] - El nuevo
+ * estado del tablero.
+ * @property {string} [updatedFields.turn] - El nuevo turno, 'white' o 'black'.
+ * @property {string} [updatedFields.status] - El nuevo estado de la partida,
+ * 'ongoing', 'finished', 'abandoned'.
+ * @returns {Promise<boolean>} Promesa que devuelve true si la partida ha sido
+ * actualizada correctamente, false en caso contrario.
+ */
+async function updateGame(id, updatedFields) {
+    const mdbClient = new MongoClient(URI);
+    const chessDB = mdbClient.db('ChessM8');
+    const gamesCollection = chessDB.collection('games');
+    const result = await gamesCollection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: updatedFields }
+    );
+    return result.modifiedCount > 0;
+}
+
+/**
+ * @summary Elimina una partida de la base de datos.
+ * @param {string} id - El id de la partida a eliminar.
+ * @returns {Promise<boolean>} Promesa que devuelve true si la partida ha sido
+ * eliminada correctamente, false en caso contrario.
+ */
+
+async function deleteGame(id) {
+    const mdbClient = new MongoClient(URI);
+    const chessDB = mdbClient.db('ChessM8');
+    const gamesCollection = chessDB.collection('games');
+    const result = await gamesCollection.deleteOne({ _id: new ObjectId(id) });
+    return result.deletedCount > 0;
+}
+
+/**
+ * @summary Recupera una lista de partidas que estan esperando a que otro usuario
+ * se una.
+ * @returns {Promise<Array<Game>>} Promesa que devuelve una lista de partidas
+ * disponibles.
+ */
+async function getAvailableGames() {
+    const mdbClient = new MongoClient(URI);
+    const chessDB = mdbClient.db('ChessM8');
+    const gamesCollection = chessDB.collection('games');
+    return await gamesCollection.find({ status: "waiting" }).toArray();
+}
+
+
 
 // TO_DO: crear una pagina nueva en la que se puedan buscar usuarios por su username.
 //En un futuro podrian buscarse y posteriormente agregar como amigos. Tambien
