@@ -153,61 +153,105 @@ body {
 
   /* TABLERO DE JUEGO */
   .board {
-    display: grid;
-    grid-template-columns: repeat(8, 60px);
-    grid-template-rows: repeat(8, 60px);
-    margin: 20px auto;
-
-    /* border: 2px solid #333; */
+      display: grid;
+      grid-template-columns: repeat(8, 60px);
+      grid-template-rows: repeat(8, 60px);
+      margin: 20px auto;
   }
-  
+
   .square {
-    width: 60px;
-    height: 60px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 32px;
-    user-select: none;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 32px;
+      user-select: none;
   }
 
   .selected {
-    border: 3px solid #00c3ff;
+      border: 3px solid #00c3ff;
   }
 
   .highlight {
-    background-color: #90ee90 !important;
+      background-color: #90ee90 !important;
   }
-  
+
   .white {
-    background-color: #f0d9b5;
+      background-color: #f0d9b5;
   }
-  
+
   .black {
-    background-color: #b58863;
+      background-color: #b58863;
   }
-  
+
   #turn-indicator {
-    font-size: 18px;
-    font-weight: bold;
+      font-size: 18px;
+      font-weight: bold;
   }
 
-  .promotion-container {
-  position: fixed;
-  top: 30%;
-  left: 40%;
-  background-color: white;
-  padding: 20px;
-  border: 1px solid black;
-  border-radius: 8px;
-  z-index: 10;
-  text-align: center;
-}
+  /* CONTAINER DE LA PARTIDA */
+  .game-container {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: flex-start;
+      margin-top: 50px;
+  }
 
-.promotion-container select {
-  margin-bottom: 10px;
-  font-size: 16px;
-}
+  /* INFORMACIÓN DE LA PARTIDA */
+  .game-info {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding: 20px;
+      border: 1px solid #333;
+      border-radius: 10px;
+      background-color: #f7f7f7;
+  }
+
+  /* BOTÓN DE RENDIRSE */
+  #surrender-btn {
+      background-color: #e74c3c;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+  }
+
+  #surrender-btn:hover {
+      background-color: #c0392b;
+  }
+
+  /* CONTENEDOR DE PROMOCIÓN DE PEÓN */
+  .promotion-container {
+      position: fixed;
+      top: 30%;
+      left: 40%;
+      background-color: white;
+      padding: 20px;
+      border: 1px solid black;
+      border-radius: 8px;
+      z-index: 10;
+      text-align: center;
+  }
+
+  .promotion-container select {
+      margin-bottom: 10px;
+      font-size: 16px;
+  }
+
+  /* MENSAJE DE ESPERA */
+  .waiting-message {
+      background-color: #ffeb3b;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: bold;
+  }
 
   
 /* BUSCADOR DE AMIGOS */

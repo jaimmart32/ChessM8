@@ -4,6 +4,7 @@ import { crud } from './server.crud.js'
 import { db } from './server.mongodb.js';
 import { handleSignIn, handleLogin, handleUpdateProfile, handleGetUsers, handleAddFriend, handleGetFriends, handleRemoveFriend } from './controllers/users.js';
 import { handleCreateGame, handleGetGame, handleUpdateGame, handleDeleteGame, handleGetAvailableGames, } from './controllers/games.js';
+import { handleMove, handleGetGameState, handleSurrender } from './controllers/gameLogic.js';
 
 const app = express();
 const port = process.env.PORT;
@@ -105,6 +106,11 @@ app.get('/api/games/:id', handleGetGame);
 app.put('/api/games/:id', handleUpdateGame);
 app.delete('/api/games/:id', handleDeleteGame);
 app.get('/api/games/available', handleGetAvailableGames);
+
+// API para partidas online
+app.post('/api/games/:id/move', handleMove);
+app.get('/api/games/:id/state', handleGetGameState);
+app.post('/api/games/:id/surrender', handleSurrender);
 
 
 app.listen(port, () => {

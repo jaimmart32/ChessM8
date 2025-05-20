@@ -187,9 +187,14 @@ async function updateGame(id, updatedFields) {
     const mdbClient = new MongoClient(URI);
     const chessDB = mdbClient.db('ChessM8');
     const gamesCollection = chessDB.collection('games');
+
+    // Asegurarse de que _id no este presente en los campos a actualizar
+    const { _id, ...fieldsToUpdate } = updatedFields;
+    if(_id)
+        console.log(`ID de la partida que solicita el update: ${_id}`);
     const result = await gamesCollection.updateOne(
         { _id: new ObjectId(id) },
-        { $set: updatedFields }
+        { $set: fieldsToUpdate }
     );
     return result.modifiedCount > 0;
 }

@@ -35,7 +35,7 @@ createGameBtn?.addEventListener('click', async () => {
 
 // Unirse a una partida
 joinGameBtn?.addEventListener('click', async () => {
-    const gameId = gameIdInput?.ariaValueMax?.trim();
+    const gameId = gameIdInput?.value.trim();
 
     if(!gameId) {
         alert('Por favor, introduce un ID de partida');
