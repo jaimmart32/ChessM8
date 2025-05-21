@@ -75,11 +75,29 @@ function renderBoard() {
             square.classList.add(isWhite ? 'white' : 'black');
             square.dataset.row = row;
             square.dataset.col = col;
-            square.textContent = gameState.boardState[row][col];
+            square.textContent = getPieceSymbol(gameState.boardState[row][col]);
             square.addEventListener('click', () => handleClick(square));
             board?.appendChild(square);
         }
     }
+}
+
+function getPieceSymbol(letter) {
+  const symbols = {
+    'K': '♔',
+    'Q': '♕',
+    'R': '♖',
+    'B': '♗',
+    'H': '♘',
+    'P': '♙',
+    'k': '♚',
+    'q': '♛',
+    'r': '♜',
+    'b': '♝',
+    'h': '♞',
+    'p': '♟',
+  };
+  return symbols[letter] || '';
 }
 
 function updateTurnIndicator() {

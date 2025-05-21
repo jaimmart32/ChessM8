@@ -3,7 +3,7 @@ import { isAuthenticated } from "./authGuard.js";
 
 // Muestra los links de la nav-bar segun si esta logueado o no
 document.addEventListener('DOMContentLoaded', () => {
-    let showIfLoggedIn = ['game-link', 'profile-link', 'friends-link', 'logout-link'];
+    let showIfLoggedIn = ['game-link', 'online-link', 'profile-link', 'friends-link', 'logout-link'];
     let showIfLoggedOut = ['login-link', 'register-link'];
     
     let loggedIn = isAuthenticated();

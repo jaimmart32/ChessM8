@@ -49,13 +49,31 @@ function createBoard() {
       square.classList.add(isWhite ? 'white' : 'black');
       square.dataset.row = row;
       square.dataset.col = col;
-      square.textContent = boardState[row][col];
+      square.textContent = getPieceSymbol(boardState[row][col]);
       square.addEventListener('click', () => handleClick(square));
       board.appendChild(square);
     }
   }
 
   turnIndicator.textContent = `Turno: ${currentTurn === 'white' ? '♙ Blancas' : '♟ Negras'}`;
+}
+
+function getPieceSymbol(letter) {
+  const symbols = {
+    'K': '♔',
+    'Q': '♕',
+    'R': '♖',
+    'B': '♗',
+    'H': '♘',
+    'P': '♙',
+    'k': '♚',
+    'q': '♛',
+    'r': '♜',
+    'b': '♝',
+    'h': '♞',
+    'p': '♟',
+  };
+  return symbols[letter] || '';
 }
 
 function handleClick(square) {
