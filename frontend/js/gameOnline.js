@@ -1,6 +1,7 @@
 import { getAPIData } from "./fetch.js";
 import { requireAuth } from "./authGuard.js";
 import { getCurrentUser } from "./db.js";
+import { getLegalMoves, simulateMove, isKingInCheck } from "./gameLogicClient.js";
 
 requireAuth();
 
@@ -15,7 +16,36 @@ let gameState = null;
 let selectedSquare = null;
 
 // Polling para obtener el estado actualizado de la partida
-setInterval(fetchGameState, 2000);
+let pollingIntervalId = null;
+let pollingDelay = 1000;
+
+function startPolling() {
+    if (pollingIntervalId) return;
+
+    async function poll() {
+        await fetchGameState();
+
+        // Si la partida ha terminado, paramos el polling
+        if (gameState?.status === 'finished') {
+            clearInterval(pollingIntervalId);
+            pollingIntervalId = null;
+            console.log('Partida finalizada. Polling detenido.');
+            return;
+        }
+
+        // Adaptamos el intervalo según el turno
+        const newDelay = isPlayerTurn() ? 5000 : 1000;
+
+        if (newDelay !== pollingDelay) {
+            clearInterval(pollingIntervalId);
+            pollingDelay = newDelay;
+            pollingIntervalId = setInterval(poll, pollingDelay);
+            console.log(`Ajustando polling a cada ${pollingDelay / 1000}s`);
+        }
+    }
+
+    pollingIntervalId = setInterval(poll, pollingDelay);
+}
 
 async function fetchGameState() {
     try {
@@ -72,6 +102,26 @@ async function handleClick(square) {
         const fromCol = parseInt(selectedSquare.dataset.col);
 
         console.log(`Intentando mover de (${fromRow}, ${fromCol}) a (${row}, ${col})`);
+
+        // Comprobacion en el cliente de la legalidad del movimiento para ahorrar peticiones
+        const legalMoves = getLegalMoves(gameState.boardState[fromRow][fromCol  ], fromRow, fromCol, gameState.boardState);
+        const isLegal = legalMoves.some(([r, c]) => r === row && c === col);
+        if(!isLegal) {
+            console.log("ES UN MOVIMIENTO ILEGAL");
+            selectedSquare.classList.remove('selected');
+            selectedSquare = null;
+            return;
+        }
+
+        // Comprobacion de si se deja al propio rey en jaque tras el movimiento para ahorrar peticiones
+        const simulatedBoard = simulateMove(gameState.boardState, fromRow, fromCol, row, col);
+        const isInCheck = isKingInCheck(simulatedBoard, gameState.turn);
+        if(isInCheck) {
+            selectedSquare.classList.remove('selected');
+            selectedSquare = null;
+            return;
+        }
+
         try {
             const moveResult = await getAPIData(
                 `http://127.0.0.1:1337/api/games/${gameId}/move`,
@@ -99,6 +149,10 @@ async function handleClick(square) {
             selectedSquare = null;
             renderBoard();
             updateTurnIndicator();
+
+            if(!isPlayerTurn()) {
+                startPolling();
+            }
         }
         catch (err) {
             console.error('Movimiento ilegal o error: ', err);
@@ -143,4 +197,4 @@ surrenderBtn?.addEventListener('click', async () => {
 });
 
 //Cargar estado inicial
-fetchGameState();
+startPolling();

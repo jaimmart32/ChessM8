@@ -1,6 +1,6 @@
 {
   "include": ["./frontend/js/**/*.js"],
-  "exclude": ["./**/_hidden/**/*", "./frontend/js/game.js", "./frontend/js/gameOnline.js", "./frontend/js/__tests__/*.js"],
+  "exclude": ["./**/_hidden/**/*", "./frontend/js/game.js", "./frontend/js/gameOnline.js", "./frontend/js/gameLogicClient.js", "./frontend/js/__tests__/*.js"],
   "compilerOptions": {
     "resolveJsonModule": true,
     "paths": {

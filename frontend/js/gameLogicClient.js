@@ -1,98 +1,3 @@
-function isLegalMove(board, fromRow, fromCol, toRow, toCol, color) {
-  // Comprobar si es un movimiento dentro de los límites del tablero
-  if (!isInsideBoard(fromRow, fromCol) || !isInsideBoard(toRow, toCol)) {
-    return false;
-  }
-  
-  const piece = board[fromRow][fromCol];
-  const target = board[toRow][toCol];
-
-  // Comprobar que haya una pieza
-  if (!piece) return false;
-
-  // Comprobar si se está intentando mover una pieza del color incorrecto
-  if ((color === 'white' && piece !== piece.toUpperCase()) ||
-      (color === 'black' && piece !== piece.toLowerCase())) {
-    return false;
-  }
-
-  // Comprobar que no se está moviendo a una pieza propia
-  if (target && isSameColorFromColor(color, target)) {
-    return false;
-  }
-
-  // Obtener movimientos legales de la pieza en cuestión
-  const legalMoves = getLegalMoves(piece, fromRow, fromCol, board);
-  const isMoveIncluded = legalMoves.some(([r, c]) => r === toRow && c === toCol);
-  if (!isMoveIncluded) return false;
-
-  //Simular movimiento para comprobar que no se deja en jaque al rey
-  const simulatedBoard = getUpdatedBoard(board, fromRow, fromCol, toRow, toCol);
-  if (isKingInCheck(simulatedBoard, color)) {
-    return false;
-  }
-
-  return true;
-}
-
-function getUpdatedBoard(board, fromRow, fromCol, toRow, toCol) {
-  const newBoard = JSON.parse(JSON.stringify(board));
-  newBoard[toRow][toCol] = newBoard[fromRow][fromCol];
-  newBoard[fromRow][fromCol] = '';
-  return newBoard;
-}
-
-function isKingInCheck(board, color) {
-  const kingSymbol = color === 'white' ? 'K' : 'k';
-  let kingPosition;
-
-  // Buscar la posición del rey
-  for (let row = 0; row < 8; row++) {
-    for (let col = 0; col < 8; col++) {
-      if (board[row][col] === kingSymbol) {
-        kingPosition = [row, col];
-        break;
-      }
-    }
-  }
-
-  if (!kingPosition) return false;
-
-  // Comprobar si alguna pieza enemiga puede capturar al rey
-  for (let row = 0; row < 8; row++) {
-    for (let col = 0; col < 8; col++) {
-      if (isEnemy(row, col, color, board)) {
-        const legalMoves = getLegalMoves(board[row][col], row, col, board);
-        if (legalMoves.some(([r, c]) => r === kingPosition[0] && c === kingPosition[1])) {
-          return true;
-        }
-      }
-    }
-  }
-  return false;
-}
-
-function isCheckMate(board, color) {
-  // Recorremos todas las piezas del color actual
-  for (let row = 0; row < 8; row++) {
-    for (let col = 0; col < 8; col++) {
-      const piece = board[row][col];
-      if (piece && isSameColorFromColor(color, piece)) {
-        const legalMoves = getLegalMoves(piece, row, col, board);
-
-        for (const [r, c] of legalMoves) {
-          const simulatedBoard = getUpdatedBoard(board, row, col, r, c);
-
-          if (!isKingInCheck(simulatedBoard, color)) {
-            return false; // Existe un movimiento que evita el jaque
-          }
-        }
-      }
-    }
-  }
-  return true;
-}
-
 // Funciones para determinar los movimientos legales de una pieza en particular
 export function getLegalMoves(piece, row, col, board) {
   switch (piece) {
@@ -268,6 +173,48 @@ export function getKingMoves(row, col, color, board) {
   return moves;
 }
 
+//Simular el movimiento para validarlo en funcion de si deja en jaque al rey
+export function simulateMove(board, fromRow, fromCol, toRow, toCol) {
+  //Deep copy del tablero
+  const boardCopy = JSON.parse(JSON.stringify(board));
+
+  //intercambiar casillas(realizar movimiento)
+  boardCopy[toRow][toCol] = boardCopy[fromRow][fromCol];
+  boardCopy[fromRow][fromCol] = '';
+
+  return boardCopy;
+}
+
+export function isKingInCheck(board, color) {
+  const kingSymbol = color === 'white' ? 'K' : 'k';
+  let kingPosition;
+
+  // Buscar la posición del rey
+  for (let row = 0; row < 8; row++) {
+    for (let col = 0; col < 8; col++) {
+      if (board[row][col] === kingSymbol) {
+        kingPosition = [row, col];
+        break;
+      }
+    }
+  }
+
+  if (!kingPosition) return false;
+
+  // Comprobar si alguna pieza enemiga puede capturar al rey
+  for (let row = 0; row < 8; row++) {
+    for (let col = 0; col < 8; col++) {
+      if (isEnemy(row, col, color, board)) {
+        const legalMoves = getLegalMoves(board[row][col], row, col, board);
+        if (legalMoves.some(([r, c]) => r === kingPosition[0] && c === kingPosition[1])) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
 // Funciones auxiliares
 function isInsideBoard(row, col) {
   return row >= 0 && row < 8 && col >= 0 && col < 8;
@@ -288,11 +235,3 @@ function isEnemy(row, col, color, board) {
   return (color === 'white' && piece === piece.toLowerCase()) ||
          (color === 'black' && piece === piece.toUpperCase());
 }
-
-
-export {
-  isLegalMove,
-  getUpdatedBoard,
-  isKingInCheck,
-  isCheckMate
-};

@@ -35,6 +35,7 @@ export async function handleMove(req, res) {
         //Verificar si es jaque mate
         const isMate = isCheckMate(newBoardState, nextTurn);
         const isCheck = isKingInCheck(newBoardState, nextTurn);
+        console.log('--------------------------FINAL DE TURNO---------------------');
 
         //Actualizar el estado del juego
         await db.games.update(gameId, {
