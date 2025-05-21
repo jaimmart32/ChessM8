@@ -10,6 +10,10 @@ export class Game {
     this.playerBlack = playerBlack; // ID o nombre del jugador con negras
     this.boardState = this.initializeBoard(); // Estado del tablero
     this.turn = 'white'; // Turno actual
+    this.hasMoved = {
+      white: { king: false, rookLeft: false, rookRight: false },
+      black: { king: false, rookLeft: false, rookRight: false }
+    }
     this.status = 'waiting'; // Estado de la partida: 'ongoing', 'finished', 'waiting'
   }
 

@@ -1,5 +1,5 @@
 // Funciones para determinar los movimientos legales de una pieza en particular
-export function getLegalMoves(piece, row, col, board) {
+export function getLegalMoves(piece, row, col, board, hasMoved = null) {
   switch (piece) {
     case 'P':
       return getWhitePawnMoves(row, col, board);
@@ -22,9 +22,9 @@ export function getLegalMoves(piece, row, col, board) {
     case 'q':
       return getQueenMoves(row, col, 'black', board);
     case 'K':
-      return getKingMoves(row, col, 'white', board);
+      return getKingMoves(row, col, 'white', board, hasMoved);
     case 'k':
-      return getKingMoves(row, col, 'black', board);
+      return getKingMoves(row, col, 'black', board, hasMoved);
     default:
       return [];
   }
@@ -151,7 +151,7 @@ export function getQueenMoves(row, col, color, board) {
   return [...diagonalMoves, ...straightMoves];
 }
 
-export function getKingMoves(row, col, color, board) {
+export function getKingMoves(row, col, color, board, hasMoved) {
   const moves = [];
   const directions = [
     [-1, 0], [+1, 0],
@@ -170,7 +170,52 @@ export function getKingMoves(row, col, color, board) {
       }
     }
   }
+
+  if(hasMoved) {
+    const castleMoves = getCastleMoves(color, board, hasMoved);
+    moves.push(...castleMoves);
+  }
+
   return moves;
+}
+
+function getCastleMoves(color, board, hasMoved) {
+  const row = color === 'white' ? 7 : 0;
+  const moves = [];
+
+  //Enroque corto
+  if(!hasMoved[color].king && !hasMoved[color].rookRight){
+    if(
+      isEmpty(row, 5, board) &&
+      isEmpty(row, 6, board) &&
+      !isKingInCheck(board, color) &&
+      !isKingInCheckAfterMove(board, row, 4, row, 5, color) &&
+      !isKingInCheckAfterMove(board, row, 4, row, 6, color)
+    ) {
+      moves.push([row, 6]);
+    }
+  }
+
+  //Enroque largo
+  if(!hasMoved[color].king && !hasMoved[color].rookLeft){
+    if(
+      isEmpty(row, 3, board) &&
+      isEmpty(row, 2, board) &&
+      isEmpty(row, 1, board) &&
+      !isKingInCheck(board, color) &&
+      !isKingInCheckAfterMove(board, row, 4, row, 3, color) &&
+      !isKingInCheckAfterMove(board, row, 4, row, 2, color)
+    ) {
+      moves.push([row, 2]);
+    }
+  }
+
+  return moves;
+}
+
+function isKingInCheckAfterMove(board, fromRow, fromCol, toRow, toCol, color){
+  const simulatedBoard = simulateMove(board, fromRow, fromCol, toRow, toCol);
+  return isKingInCheck(simulatedBoard, color);
 }
 
 //Simular el movimiento para validarlo en funcion de si deja en jaque al rey

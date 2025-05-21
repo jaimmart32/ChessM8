@@ -22,7 +22,7 @@ export async function handleMove(req, res) {
         }
 
         //Comprobar si el movimiento es legal
-        const legalMoves = isLegalMove(game.boardState, fromRow, fromCol, toRow, toCol, game.turn);
+        const legalMoves = isLegalMove(game.boardState, fromRow, fromCol, toRow, toCol, game.turn, game.hasMoved);
         
         if(!legalMoves) {
             return res.status(400).json({ error: 'Movimiento ilegal'});
@@ -37,11 +37,42 @@ export async function handleMove(req, res) {
         const isCheck = isKingInCheck(newBoardState, nextTurn);
         console.log('--------------------------FINAL DE TURNO---------------------');
 
+        //Comprobar movimientos que afectan al enroque
+        const hasMoved = { ...game.hasMoved };
+
+        const piece = game.boardState[fromRow][fromCol];
+        const turn = game.turn;
+
+        //Actualizar hasMoved si se mueve el rey
+        if(piece.toUpperCase() === 'K') {
+            hasMoved[turn].king = true;
+
+            //Detectar enroque y mover en consecuencia
+            
+            if(fromCol === 4 && toCol === 6) {
+                //enroque corto
+                newBoardState[fromRow][5] = newBoardState[fromRow][7];
+                newBoardState[fromRow][7] = '';
+            }
+            else if(fromCol === 4 && toCol === 2) {
+                //enroque largo
+                newBoardState[fromRow][3] = newBoardState[fromRow][0];
+                newBoardState[fromRow][0] = ''
+            }
+        }
+
+        //Actualizar hasMoved si se mueve una torre
+        if(piece.toUpperCase() === 'R') {
+            if(fromCol === 0) hasMoved[turn].rookLeft = true;
+            if(fromCol === 7) hasMoved[turn].rookRight = true;
+        }
+
         //Actualizar el estado del juego
         await db.games.update(gameId, {
             boardState: newBoardState,
             turn: nextTurn,
-            status: isMate ? 'finished' : 'ongoing'
+            status: isMate ? 'finished' : 'ongoing',
+            hasMoved: hasMoved
         });
 
         res.status(200).json({ boardState: newBoardState, turn: nextTurn, check: isCheck, mate: isMate });

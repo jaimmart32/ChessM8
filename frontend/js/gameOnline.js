@@ -104,7 +104,7 @@ async function handleClick(square) {
         console.log(`Intentando mover de (${fromRow}, ${fromCol}) a (${row}, ${col})`);
 
         // Comprobacion en el cliente de la legalidad del movimiento para ahorrar peticiones
-        const legalMoves = getLegalMoves(gameState.boardState[fromRow][fromCol  ], fromRow, fromCol, gameState.boardState);
+        const legalMoves = getLegalMoves(gameState.boardState[fromRow][fromCol  ], fromRow, fromCol, gameState.boardState, gameState.hasMoved);
         const isLegal = legalMoves.some(([r, c]) => r === row && c === col);
         if(!isLegal) {
             console.log("ES UN MOVIMIENTO ILEGAL");
