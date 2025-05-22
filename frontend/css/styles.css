@@ -5,7 +5,7 @@ body {
     padding: 20px;
   }
   
-  header {
+  /* header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -18,7 +18,54 @@ body {
       color: #333;
       font-weight: bold;
     }
-  }
+  } */
+  
+header {
+  background-color: #333;
+  padding: 10px 20px;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Encabezado principal "ChessM8" */
+header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+/* Estilos del contenedor de enlaces */
+.navbar {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+/* Enlaces individuales */
+.navbar a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 8px 14px;
+  border-radius: 6px;
+  transition: background-color 0.3s;
+}
+
+/* Hover efecto */
+.navbar a:hover {
+  background-color: #555;
+}
+
+/* Enlace activo */
+.navbar a.active {
+  background-color: #fff;
+  color: #333;
+}
+
   
   /* PAGINA DE INICIO */
   .home {
@@ -396,7 +443,7 @@ body {
 
 /* PAGINA DE CREAR Y UNIRSE A PARTIDA */
 
-.online-container {
+/* .online-container {
     display: flex;
     justify-content: center;
     gap: 20px;
@@ -436,4 +483,76 @@ body {
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
+} */
+
+/* PAGINA DE CREAR Y UNIRSE A PARTIDA */
+
+/* CABECERA DE TÍTULO */
+.online-title {
+  margin-top: 60px;
+  font-size: 32px;
+  color: #333;
+  text-align: center;
 }
+
+/* CONTENEDOR FLEXIBLE */
+.online-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 30px;
+  flex-wrap: wrap;
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+/* TARJETAS MEJORADAS */
+.card {
+  flex: 1 1 300px;
+  max-width: 350px;
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 25px 20px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+/* TITULO DE LA TARJETA */
+.card h2 {
+  margin-bottom: 20px;
+  color: #222;
+}
+
+/* INPUTS */
+.card input {
+  padding: 12px;
+  width: 80%;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+/* BOTONES */
+.card button {
+  background-color: #333;
+  color: white;
+  padding: 12px 20px;
+  font-size: 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.card button:hover {
+  background-color: #555;
+}
+
