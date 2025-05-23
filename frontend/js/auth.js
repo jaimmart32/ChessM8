@@ -14,7 +14,6 @@ signInFormComponent?.addEventListener('signin-form-submitted', (event) => {
 
     if(success) {
         console.log(user);
-        alert('Registro exitoso, puedes iniciar sesion!');
         window.location.href = 'login.html';
     }
     else {
@@ -29,7 +28,6 @@ loginFormComponent?.addEventListener('login-form-submitted', (event) => {
 
     if(success) {
         setCurrentUser(user);
-        alert('Has iniciado sesión exitosamente!AAAAAAAAAA');
         window.location.href = 'profile.html';
     }
     else {

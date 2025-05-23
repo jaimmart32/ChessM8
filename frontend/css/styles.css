@@ -66,6 +66,40 @@ header h1 {
   color: #333;
 }
 
+/* FOOTER */
+
+footer {
+  background-color: #333;
+  color: white;
+  padding: 20px;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 60px;
+  border-top: 1px solid #555;
+}
+
+footer a {
+  color: #42cbf5;
+  text-decoration: none;
+  margin: 0 5px;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* Forzar footer al fondo */
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main.home, main.friends-list-container {
+  flex: 1;
+}
+
   
   /* PAGINA DE INICIO */
   .home {
@@ -138,6 +172,10 @@ header h1 {
   .profile-container {
     display: flex;
     justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    padding: 40px 20px;
     margin-top: 60px;
 
     .profile-card {
@@ -198,6 +236,21 @@ header h1 {
     }
   }
 
+  #restart-btn {
+    background-color: #333;
+    color: white;
+    padding: 12px 24px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  #restart-btn:hover {
+    background-color: #555;
+  }
+
   /* TABLERO DE JUEGO */
   .board {
       display: grid;
@@ -238,19 +291,39 @@ header h1 {
   }
 
   /* CONTAINER DE LA PARTIDA */
-  .game-container {
+
+  /* .game-container {
       display: flex;
       gap: 20px;
       justify-content: center;
       align-items: flex-start;
       margin-top: 50px;
-  }
+  } */
+  
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 40px;
+}
+
+.game-container h2 {
+  margin-bottom: 20px;
+}
+
+.game-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px; /* Espacio entre tablero, turno y botón */
+}
+
 
   /* INFORMACIÓN DE LA PARTIDA */
   .game-info {
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 10px;
       padding: 20px;
       border: 1px solid #333;
       border-radius: 10px;
